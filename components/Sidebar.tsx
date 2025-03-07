@@ -1,43 +1,46 @@
 "use client";
 
-import { useState, JSX } from "react";
-import Link from "next/link";
+import { useState } from "react";
 import { AnalyticsIcon, BroadcastIcon, CollapseIcon, PeriskopeIcon, RulesIcon} from "@/utils/Icons";
 import { IconType } from "react-icons";
 import { IoChatbubbleEllipses, IoTicket } from "react-icons/io5";
 import { FaListUl } from "react-icons/fa";
 import { RiContactsBookFill, RiFolderImageFill } from "react-icons/ri";
 import { MdChecklist } from "react-icons/md";
-import { BsGearFill, BsStars } from "react-icons/bs";
+import { BsGearFill } from "react-icons/bs";
 import { TbStarsFilled } from "react-icons/tb";
 import { AiFillHome } from "react-icons/ai";
+import SidebarNavLink from "./SidebarNavLink";
+import { usePathname } from "next/navigation";
 
 interface MenuItem {
   href?: string;
-  icon?: IconType
+  icon?: IconType;
   divider?: boolean;
   isNew?: boolean;
+  isImplemented?: boolean;
 }
 
-const Sidebar:React.FC = () => {
-  const [active, setActive] = useState<string>("/chats");
+const Sidebar: React.FC = () => {
+  const pathname = usePathname();
 
+  // Define which routes are actually implemented in the app
   const menuItems: MenuItem[] = [
-    { href: "/dashboard", icon: AiFillHome },
+    { href: "/dashboard", icon: AiFillHome, isImplemented: false },
     { divider: true },
-    { href: "/chats", icon: IoChatbubbleEllipses },
-    { href: "/tickets", icon: IoTicket },
-    { href: "/analytics", icon: AnalyticsIcon },
+    { href: "/chats", icon: IoChatbubbleEllipses, isImplemented: true },
+    { href: "/tickets", icon: IoTicket, isImplemented: false },
+    { href: "/analytics", icon: AnalyticsIcon, isImplemented: false },
     { divider: true },
-    { href: "/list", icon: FaListUl },
-    { href: "/broadcast", icon: BroadcastIcon },
-    { href: "/rules", icon: RulesIcon, isNew: true },
+    { href: "/list", icon: FaListUl, isImplemented: false },
+    { href: "/broadcast", icon: BroadcastIcon, isImplemented: false },
+    { href: "/rules", icon: RulesIcon, isNew: true, isImplemented: false },
     { divider: true },
-    { href: "/contacts", icon: RiContactsBookFill },
-    { href: "/media", icon: RiFolderImageFill },
+    { href: "/contacts", icon: RiContactsBookFill, isImplemented: false },
+    { href: "/media", icon: RiFolderImageFill, isImplemented: false },
     { divider: true },
-    { href: "/logs", icon: MdChecklist },
-    { href: "/settings", icon: BsGearFill },
+    { href: "/logs", icon: MdChecklist, isImplemented: false },
+    { href: "/settings", icon: BsGearFill, isImplemented: false },
   ];
 
   return (
@@ -50,27 +53,21 @@ const Sidebar:React.FC = () => {
           item.divider ? (
             <hr key={`divider-${index}`} className="border-gray-200 m-1" />
           ) : (
-            item.href && (
-              <Link key={item.href} href={item.href ?? "#"}>
-                <div
-                  className={`relative flex items-center justify-center px-2 py-1.5 rounded-md hover:bg-gray-100 cursor-pointer text-gray-600 ${
-                    active === item.href ? "bg-gray-100 text-green-700" : ""
-                  }`}
-                  onClick={() => item.href && setActive(item.href)}
-                >
-                  {item.icon && <item.icon className="h-5 w-5 shrink-0" />}
-                  {item.isNew && (
-                    <BsStars className="absolute top-1 right-1 text-yellow-500 h-3 w-3 rounded-full" />
-                  )}
-                </div>
-              </Link>
+            item.href && item.icon && (
+              <SidebarNavLink
+                key={item.href}
+                href={item.href}
+                icon={item.icon}
+                isNew={item.isNew}
+                isImplemented={item.isImplemented}
+              />
             )
           )
         )}
       </div>
       <div className="flex flex-col gap-y-1 p-1">
         <div className="flex items-center justify-center px-2 py-1.5 rounded-md hover:bg-gray-100 cursor-pointer text-gray-600">
-          <TbStarsFilled  className="h-5 w-5" />
+          <TbStarsFilled className="h-5 w-5" />
         </div>
         <div className="flex items-center justify-center px-2 py-1.5 rounded-md hover:bg-gray-100 cursor-pointer text-gray-600">
           <CollapseIcon className="h-5 w-5 rotate-180" />
