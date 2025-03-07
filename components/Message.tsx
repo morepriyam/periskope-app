@@ -7,7 +7,7 @@ import { MdCheck } from "react-icons/md";
 export const Message = ({ text, time, date, isSent, userSentState, showHeader, senderName, phoneNumber }: any) => {
   return (
     <>
-      {/* Date Separator */}
+      {/* Date Separator - only show when date is provided */}
       {date && (
         <div className="flex justify-center my-3">
           <span className="text-xs bg-gray-200 px-3 py-1 rounded-full text-gray-600">

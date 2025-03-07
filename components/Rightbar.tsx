@@ -2,7 +2,6 @@
 
 import { AnalyticsIcon, BroadcastIcon, RulesIcon } from "@/utils/Icons";
 import { Contact } from "@/utils/chatService";
-import Link from "next/link";
 import { IconType } from "react-icons";
 import { AiFillHome } from "react-icons/ai";
 import { BsGearFill } from "react-icons/bs";
@@ -10,30 +9,32 @@ import { FaListUl } from "react-icons/fa";
 import { IoChatbubbleEllipses, IoTicket } from "react-icons/io5";
 import { MdChecklist } from "react-icons/md";
 import { RiContactsBookFill, RiFolderImageFill } from "react-icons/ri";
+import SidebarNavLink from "./SidebarNavLink";
 
 interface MenuItem {
     href?: string;
     icon?: IconType;
     divider?: boolean;
     isNew?: boolean;
+    isImplemented?: boolean;
 }
 
 interface RightbarProps {
-  contact?: Contact | null;
+    contact: Contact | null;
 }
 
 const menuItems: MenuItem[] = [
-  { href: "/dashboard", icon: AiFillHome },
-  { href: "/chats", icon: IoChatbubbleEllipses },
-  { href: "/tickets", icon: IoTicket },
-  { href: "/analytics", icon: AnalyticsIcon },
-  { href: "/list", icon: FaListUl },
-  { href: "/broadcast", icon: BroadcastIcon },
-  { href: "/rules", icon: RulesIcon },
-  { href: "/contacts", icon: RiContactsBookFill },
-  { href: "/media", icon: RiFolderImageFill },
-  { href: "/logs", icon: MdChecklist },
-  { href: "/settings", icon: BsGearFill },
+  { href: "/dashboard", icon: AiFillHome, isImplemented: false },
+  { href: "/chats", icon: IoChatbubbleEllipses, isImplemented: true },
+  { href: "/tickets", icon: IoTicket, isImplemented: false },
+  { href: "/analytics", icon: AnalyticsIcon, isImplemented: false },
+  { href: "/list", icon: FaListUl, isImplemented: false },
+  { href: "/broadcast", icon: BroadcastIcon, isImplemented: false },
+  { href: "/rules", icon: RulesIcon, isImplemented: false },
+  { href: "/contacts", icon: RiContactsBookFill, isImplemented: false },
+  { href: "/media", icon: RiFolderImageFill, isImplemented: false },
+  { href: "/logs", icon: MdChecklist, isImplemented: false },
+  { href: "/settings", icon: BsGearFill, isImplemented: false },
 ];
 
 
@@ -42,18 +43,18 @@ const Rightbar: React.FC<RightbarProps> = ({ contact }) => {
         <aside className="w-14 border-l border-gray-200 p-2 flex flex-col gap-2 h-full">
           {menuItems.map(
             (item) =>
-              item.href && (
-                <Link key={item.href} href={item.href ?? "#"}>
-                  <div
-                    className={`relative flex items-center justify-center px-2 py-1.5 rounded-md hover:bg-gray-100 cursor-pointer text-gray-300`}
-                  >
-                    {item.icon && <item.icon className="h-5 w-5 shrink-0" />}
-                  </div>
-                </Link>
+              item.href && item.icon && (
+                <SidebarNavLink
+                  key={item.href}
+                  href={item.href}
+                  icon={item.icon}
+                  isNew={item.isNew}
+                  isImplemented={item.isImplemented}
+                />
               )
           )}
         </aside>
-        )
+    )
 };
 
 export default Rightbar;

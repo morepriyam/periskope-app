@@ -27,18 +27,18 @@ export const ContactItem: React.FC<ContactItemProps> = ({
   latestMessage,
   phone,
   unreadCount,
-  tags = [],
+  tags = ["Demo", "internal"],
   date,
   avatar,
   isMuted = false,
   userSentState,
 }) => {
   return (
-    <div className="flex items-center justify-between bg-white hover:bg-gray-100 cursor-pointer rounded-sm border-b border-gray-200">
+    <div className="flex items-center justify-between bg-white hover:bg-gray-100 cursor-pointer rounded-sm">
       {/* Left Section - Profile Icon and Contact Info */}
       <div className="flex items-center space-x-2 p-2">
         {/* Profile Picture */}
-        <div className="relative h-10 w-10 rounded-full flex items-center justify-center bg-gray-200">
+        <div className="relative transform -translate-y-1.5 h-10 w-10 rounded-full flex items-center justify-center bg-gray-200">
           {avatar ? (
             <img src={avatar} alt="Avatar" className="h-10 w-10 rounded-full" />
           ) : (
@@ -51,7 +51,6 @@ export const ContactItem: React.FC<ContactItemProps> = ({
             {name || phone} {/* Display name if available, otherwise phone */}
           </h4>
           <div className="flex items-center">
-            {/* Message status icons (only if unreadCount is 0) */}
             {unreadCount && unreadCount > 0 ? null : (
               <>
                 {userSentState === UserSentState.SENT && (
@@ -65,18 +64,18 @@ export const ContactItem: React.FC<ContactItemProps> = ({
                 )}
               </>
             )}
-            <p className="text-xs text-gray-500 truncate w-50 px-0.5 mb-1">
+            <p className="text-xs text-gray-500 truncate w-20 lg:w-50 px-0.5">
               {latestMessage}
             </p>
           </div>
-          <p className="text-xs w-fit px-1 rounded-md bg-gray-100 text-gray-400 flex items-center justify-start">
+          <p className="text-xs w-fit px-1 mt-0.5 rounded-md bg-gray-100 text-gray-400 flex items-center justify-start">
             <FaPhone className="h-2 w-2  mr-1" />
             {phone}
           </p>
         </div>
       </div>
       {/* Right Section - Tags, Unread Count, Date */}
-      <div className="flex flex-col relative items-end space-y-1 right-1 top-0 h-14">
+      <div className="flex flex-col relative items-end space-y-1 right-2 top-0 h-14">
         {/* Tags */}
         <div className="flex space-x-1">
           {tags.map((tag, index) => (
@@ -99,14 +98,14 @@ export const ContactItem: React.FC<ContactItemProps> = ({
           ))}
         </div>
 
-        <div className="flex absolute right-1 bottom-3 gap-0.5">
+        <div className="flex absolute bottom-3 gap-0.5">
           {/* Unread Count */}
           {unreadCount && unreadCount > 0 ? (
             <span className="text-xs bg-emerald-400 text-white px-1 rounded-full">
               {unreadCount}
             </span>
           ) : null}
-          <div className="relative h-4 w-4 rounded-full flex items-center justify-center bg-gray-200">
+          <div className="relative h-4 w-4 bottom-0.5 rounded-full flex items-center justify-center bg-gray-200">
             {avatar ? (
               <img src={avatar} alt="Avatar" className="h-4 w-4 rounded-full" />
             ) : (
@@ -116,7 +115,7 @@ export const ContactItem: React.FC<ContactItemProps> = ({
         </div>
 
         {/* Date */}
-        <span className="text-xs text-gray-400 absolute bottom-0 right-1">
+        <span className="text-xs text-gray-400 absolute bottom-0">
           {date}
         </span>
       </div>

@@ -98,13 +98,13 @@ export const SignupForm = () => {
   };
 
   return (
-    <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
+    <div className="w-full max-w-md p-4 sm:p-8 space-y-6 sm:space-y-8 bg-white rounded-lg shadow-md overflow-y-auto max-h-screen sm:max-h-none">
       <div className="text-center">
         <div className="flex justify-center mb-4">
-          <PeriskopeIcon className="h-20 w-20" />
+          <PeriskopeIcon className="h-16 sm:h-20 w-16 sm:w-20" />
         </div>
-        <h1 className="text-3xl font-bold text-green-700">Create an Account</h1>
-        <p className="mt-2 text-gray-600">Join Periskope and start chatting</p>
+        <h1 className="text-2xl sm:text-3xl font-bold text-green-700">Create an Account</h1>
+        <p className="mt-2 text-sm sm:text-base text-gray-600">Join Periskope and start chatting</p>
       </div>
       
       {error && (
@@ -119,7 +119,7 @@ export const SignupForm = () => {
         </div>
       )}
       
-      <form className="mt-8 space-y-6" onSubmit={handleSignUp}>
+      <form className="mt-6 sm:mt-8 space-y-4 sm:space-y-6" onSubmit={handleSignUp}>
         <div>
           <label htmlFor="username" className="block text-sm font-medium text-gray-700">
             Username
@@ -131,7 +131,8 @@ export const SignupForm = () => {
             required
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 text-sm"
+            autoComplete="username"
           />
         </div>
         
@@ -146,7 +147,8 @@ export const SignupForm = () => {
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 text-sm"
+            autoComplete="email"
           />
         </div>
         
@@ -162,11 +164,12 @@ export const SignupForm = () => {
             placeholder="+1 555-123-4567"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 text-sm"
+            autoComplete="tel"
           />
-          <div className="flex justify-between items-center mt-1">
-            <p className="text-xs text-gray-500">
-              Enter a unique phone number. Format: +1 555-123-4567
+          <div className="flex justify-between items-center mt-1 flex-wrap">
+            <p className="text-xs text-gray-500 mr-2">
+              Format: +1 555-123-4567
             </p>
             <button 
               type="button"
@@ -189,8 +192,12 @@ export const SignupForm = () => {
             required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 text-sm"
+            autoComplete="new-password"
           />
+          <p className="text-xs text-gray-500 mt-1">
+            Password must be at least 6 characters long
+          </p>
         </div>
         
         <div>
@@ -203,7 +210,8 @@ export const SignupForm = () => {
             type="url"
             value={avatarUrl}
             onChange={(e) => setAvatarUrl(e.target.value)}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 text-sm"
+            autoComplete="off"
           />
         </div>
         
@@ -211,7 +219,7 @@ export const SignupForm = () => {
           <button
             type="submit"
             disabled={loading}
-            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50"
+            className="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50"
           >
             {loading ? "Creating account..." : "Sign up"}
           </button>

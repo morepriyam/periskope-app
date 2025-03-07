@@ -29,18 +29,20 @@ export const ChatArea = ({
   messagesEndRef
 }: ChatAreaProps) => {
   return (
-    <div className="flex-1 flex flex-col">
+    <div className="flex-1 flex flex-col h-full overflow-hidden">
       <ChatHeader selectedContact={selectedContact} />
       
       {selectedContact ? (
         <>
-          <MessageList 
-            messages={messages}
-            userId={userId}
-            selectedContactName={selectedContact.username}
-            currentUserName={username}
-            messagesEndRef={messagesEndRef}
-          />
+          <div className="flex-1 overflow-hidden">
+            <MessageList 
+              messages={messages}
+              userId={userId}
+              selectedContactName={selectedContact.username}
+              currentUserName={username}
+              messagesEndRef={messagesEndRef}
+            />
+          </div>
           <MessageInput 
             message={newMessage}
             setMessage={setNewMessage}
