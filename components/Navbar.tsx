@@ -14,7 +14,7 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="w-full bg-white border-b border-gray-200 shadow-sm h-14 flex items-center justify-between px-4 z-50">
+    <nav className="w-full border-b border-gray-200  h-12 flex items-center justify-between px-4 z-50">
       {/* Left Section - Chats Title with Icon */}
       <div className="flex items-center text-black text-sm font-medium">
         <IoChatbubbleEllipses className="h-4 w-4 mr-2 text-gray-500" />
@@ -30,29 +30,29 @@ const Navbar = () => {
       </button>
 
       {/* Right Section - Utility Buttons (Visible on Desktop) */}
-      <div className="hidden md:flex items-center space-x-2 flex-nowrap overflow-x-auto pr-4">
-        <button className="flex items-center px-3 py-1 text-black text-sm bg-white border border-gray-300 rounded-md hover:bg-gray-100 transition whitespace-nowrap">
+      <div className="hidden md:flex items-center space-x-2 flex-nowrap overflow-x-auto pr-1">
+        <button className="flex items-center px-2.5 py-1 text-black text-sm bg-white border border-gray-300 rounded-md hover:bg-gray-100 transition whitespace-nowrap cursor-pointer">
           <TbRefreshDot className="h-4 w-4 mr-1 text-black" /> Refresh
         </button>
-        <button className="flex items-center px-3 py-1 text-black text-sm bg-white border border-gray-300 rounded-md hover:bg-gray-100 transition whitespace-nowrap">
+        <button className="flex items-center px-2.5 py-1 text-black text-sm bg-white border border-gray-300 rounded-md hover:bg-gray-100 transition whitespace-nowrap cursor-pointer">
           <LuCircleHelp className="h-4 w-4 mr-1" /> Help
         </button>
-        <div className="flex items-center px-3 py-1 text-black text-sm bg-white border border-gray-300 rounded-md hover:bg-gray-100 transition whitespace-nowrap">
+        <div className="flex items-center px-2.5 py-1 text-black text-sm bg-white border border-gray-300 rounded-md hover:bg-gray-100 transition whitespace-nowrap cursor-pointer">
           <span className="h-2 w-2 bg-yellow-400 rounded-full mr-2"></span>
           5 / 6 phones
           <LuChevronsUpDown className="ml-1 h-3 w-3"/>
         </div>
-        <div className="flex items-center px-3 py-1 text-black text-sm bg-white border border-gray-300 rounded-md hover:bg-gray-100 transition whitespace-nowrap">
+        <div className="flex items-center px-3 py-1.5 text-black text-sm bg-white border border-gray-300 rounded-md hover:bg-gray-100 transition whitespace-nowrap cursor-pointer">
          
-        <MdOutlineInstallDesktop className="h-5 w-5" />
+        <MdOutlineInstallDesktop className="h-4 w-4" />
         </div>
-        <div className="flex items-center px-3 py-1 text-black text-sm bg-white border border-gray-300 rounded-md hover:bg-gray-100 transition whitespace-nowrap">
+        <div className="flex items-center px-3 py-1.5 text-black text-sm bg-white border border-gray-300 rounded-md hover:bg-gray-100 transition whitespace-nowrap cursor-pointer">
          
-         < IoMdNotificationsOff className="h-5 w-5" />
+         < IoMdNotificationsOff className="h-4 w-4" />
          </div>
-         <div className="flex items-center px-3 py-1 text-black text-sm bg-white border border-gray-300 rounded-md hover:bg-gray-100 transition whitespace-nowrap">
+         <div className="flex items-center px-3 py-1.5 text-black text-sm bg-white border border-gray-300 rounded-md hover:bg-gray-100 transition whitespace-nowrap cursor-pointer">
          
-         < BsStars className="h-5 w-5 p-0.5 text-yellow-500"/><CiBoxList className="h-5 w-5"/>
+         < BsStars className="h-4 w-4 p-0.5 text-yellow-500 "/><CiBoxList className="h-4 w-4"/>
          </div>
   
       </div>
