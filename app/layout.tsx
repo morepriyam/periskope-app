@@ -34,7 +34,7 @@ export default function RootLayout({
 
           <div className="flex flex-col flex-1 overflow-hidden">
             <Navbar />
-            <div className="flex-1 overflow-auto bg-gray-100">{children}</div>
+            <div className="flex-1 overflow-auto bg-white">{children}</div>
           </div>
         </div>
       </body>

@@ -25,7 +25,7 @@ const Sidebar:React.FC = () => {
   const menuItems: MenuItem[] = [
     { href: "/dashboard", icon: AiFillHome },
     { divider: true },
-    { href: "/", icon: IoChatbubbleEllipses },
+    { href: "/chats", icon: IoChatbubbleEllipses },
     { href: "/tickets", icon: IoTicket },
     { href: "/analytics", icon: AnalyticsIcon },
     { divider: true },
@@ -41,9 +41,9 @@ const Sidebar:React.FC = () => {
   ];
 
   return (
-    <div className="h-screen w-18 p-1 flex flex-col justify-between border-r border-gray-100">
+    <div className="h-screen w-14 p-1 flex flex-col justify-between border-r border-gray-200">
       <div className="flex flex-col gap-y-1 p-1">
-        <div className="flex justify-center items-center p-3">
+        <div className="flex justify-center items-center p-2">
           <PeriskopeIcon className="h-10 w-10" />
         </div>
         {menuItems.map((item, index) =>
@@ -60,7 +60,7 @@ const Sidebar:React.FC = () => {
                 >
                   {item.icon && <item.icon className="h-5 w-5 shrink-0" />}
                   {item.isNew && (
-                    <BsStars className="absolute top-1 right-2.5 text-yellow-500 h-3 w-3 rounded-full" />
+                    <BsStars className="absolute top-1 right-1 text-yellow-500 h-3 w-3 rounded-full" />
                   )}
                 </div>
               </Link>

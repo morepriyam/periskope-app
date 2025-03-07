@@ -1,8 +1,7 @@
-import Navbar from "@/components/Navbar";
+"use client";
 
-export default function Home() {
-  return (
-    <div>
-    </div>
-  );
-}
+const HomePage = () => {
+  return <div></div>;
+};
+
+export default HomePage;
