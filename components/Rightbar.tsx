@@ -1,6 +1,7 @@
 "use client";
 
 import { AnalyticsIcon, BroadcastIcon, RulesIcon } from "@/utils/Icons";
+import { Contact } from "@/utils/chatService";
 import Link from "next/link";
 import { IconType } from "react-icons";
 import { AiFillHome } from "react-icons/ai";
@@ -15,8 +16,11 @@ interface MenuItem {
     icon?: IconType;
     divider?: boolean;
     isNew?: boolean;
-  }
-  
+}
+
+interface RightbarProps {
+  contact?: Contact | null;
+}
 
 const menuItems: MenuItem[] = [
   { href: "/dashboard", icon: AiFillHome },
@@ -33,7 +37,7 @@ const menuItems: MenuItem[] = [
 ];
 
 
-const Rightbar = () => {
+const Rightbar: React.FC<RightbarProps> = ({ contact }) => {
     return (
         <aside className="w-14 border-l border-gray-200 p-2 flex flex-col gap-2 h-full">
           {menuItems.map(
