@@ -9,9 +9,12 @@ interface MessageListProps {
   messages: MessageType[];
   userId?: string;
   selectedContactName?: string;
+  selectedContactPhone?: string;
   currentUserName?: string;
+  currentUserPhone?: string;
   messagesEndRef: RefObject<HTMLDivElement>;
   onMessagesViewed?: (messageIds: string[]) => void;
+  onScrollChange?: (isAtBottom: boolean) => void;
 }
 
 const formatMessageDate = (dateString: string): string => {
@@ -54,15 +57,33 @@ export const MessageList = ({
   messages, 
   userId, 
   selectedContactName, 
+  selectedContactPhone,
   currentUserName,
+  currentUserPhone,
   messagesEndRef,
-  onMessagesViewed 
+  onMessagesViewed,
+  onScrollChange 
 }: MessageListProps) => {
   const [viewedMessages, setViewedMessages] = useState<Set<string>>(new Set());
+  const [isAtBottom, setIsAtBottom] = useState(true);
   const observerRef = useRef<IntersectionObserver | null>(null);
-  const messageRefs = useRef<Map<string, HTMLDivElement>>(new Map());
-  const dateSectionRefs = useRef<Map<string, HTMLDivElement>>(new Map());
-  const firstLoad = useRef(true);
+  const messageRefs = useRef<Map<string, HTMLElement>>(new Map());
+  const containerRef = useRef<HTMLElement>(null);
+
+  // Track if user has scrolled away from bottom
+  const handleScroll = () => {
+    if (!containerRef.current) return;
+    
+    const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
+    // Consider "at bottom" if within 100px of the bottom
+    const isBottom = scrollHeight - scrollTop - clientHeight < 100;
+    setIsAtBottom(isBottom);
+    
+    // Notify parent component about scroll position
+    if (onScrollChange) {
+      onScrollChange(isBottom);
+    }
+  };
 
   useEffect(() => {
     if (!userId || !onMessagesViewed) return;
@@ -109,41 +130,26 @@ export const MessageList = ({
     };
   }, [userId, onMessagesViewed, messages, viewedMessages]);
 
+  // Simple scroll to bottom whenever messages change
   useEffect(() => {
-    if (!messages.length) return;
-
-    if (firstLoad.current) {
-      const uniqueDates = [...new Set(messages.map(msg => formatMessageDate(msg.created_at)))];
-      if (uniqueDates.length > 0) {
-        const lastDate = uniqueDates[uniqueDates.length - 1];
-        const lastDateSection = dateSectionRefs.current.get(lastDate);
-        
-        if (lastDateSection) {
-          lastDateSection.scrollIntoView({ behavior: 'auto', block: 'start' });
-          setTimeout(() => {
-            messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-          }, 100);
-        } else {
-          messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-        }
-      } else {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-      }
-      firstLoad.current = false;
-    } else {
-      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }
+    messagesEndRef.current?.scrollIntoView({ behavior: 'auto' });
+    setIsAtBottom(true); // Reset to true when messages update
   }, [messages, messagesEndRef]);
 
+  // Add scroll event listener
   useEffect(() => {
-    firstLoad.current = true;
-    return () => {
-      firstLoad.current = true;
-    };
-  }, [selectedContactName]);
+    const container = containerRef.current;
+    if (container) {
+      container.addEventListener('scroll', handleScroll);
+      return () => {
+        container.removeEventListener('scroll', handleScroll);
+      };
+    }
+  }, []);
 
   return (
-    <div 
+    <section 
+      ref={containerRef}
       className="flex-1 overflow-y-auto p-4 h-full bg-stone-50" 
       style={{ 
         overflowY: 'auto', 
@@ -152,6 +158,7 @@ export const MessageList = ({
         backgroundRepeat: 'repeat',
         backgroundSize: 'auto'
       }}
+      aria-label="Message conversation"
     >
       <div className="flex flex-col min-h-full">
         <div className="flex-1">
@@ -159,24 +166,33 @@ export const MessageList = ({
             const showDate = index === 0 || !isSameDay(msg.created_at, messages[index - 1].created_at);
             const dateText = showDate ? formatMessageDate(msg.created_at) : undefined;
             
+            // Determine if this is the first message in a group from the same sender
+            const isFirstInGroup = index === 0 || 
+              messages[index - 1].sender_id !== msg.sender_id ||
+              showDate; // If the date changes, we should also show the header
+            
             return (
-              <div 
+              <article 
                 key={msg.id}
                 className={showDate && dateText ? "date-section" : ""}
                 ref={el => {
-                  if (el && showDate && dateText) {
-                    dateSectionRefs.current.set(dateText, el);
-                  }
                   if (el && msg.receiver_id === userId && msg.status !== 'read') {
                     messageRefs.current.set(msg.id, el);
                   }
                 }}
                 data-message-id={msg.id}
               >
+                {showDate && dateText && (
+                  <header className="flex justify-center my-3">
+                    <time className="text-xs bg-gray-200 px-3 py-1 rounded-full text-gray-600" dateTime={new Date(msg.created_at).toISOString().split('T')[0]}>
+                      {dateText}
+                    </time>
+                  </header>
+                )}
                 <Message
                   text={msg.content}
                   time={new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                  date={showDate ? formatMessageDate(msg.created_at) : undefined}
+                  date={undefined} // Since we're now handling dates in the article header
                   isSent={msg.sender_id === userId}
                   userSentState={
                     msg.sender_id === userId 
@@ -187,15 +203,16 @@ export const MessageList = ({
                           : UserSentState.SENT
                       : undefined
                   }
-                  showHeader={false}
+                  showHeader={isFirstInGroup}
                   senderName={msg.sender_id === userId ? currentUserName : selectedContactName}
+                  phone={msg.sender_id === userId ? currentUserPhone : selectedContactPhone}
                 />
-              </div>
+              </article>
             );
           })}
         </div>
         <div ref={messagesEndRef} />
       </div>
-    </div>
+    </section>
   );
 }; 

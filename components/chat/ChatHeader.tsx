@@ -1,11 +1,13 @@
 "use client";
 
+import React from "react";
 import { Contact } from "@/utils/chatService";
 import { IoPersonSharp } from "react-icons/io5";
 import { FiSearch } from "react-icons/fi";
 import { BsStars } from "react-icons/bs";
 import { useState } from "react";
 import { GenerateIcon } from "@/utils/Icons";
+import Image from "next/image";
 
 interface ChatHeaderProps {
   selectedContact: Contact | null;
@@ -25,10 +27,12 @@ export const ChatHeader = ({ selectedContact }: ChatHeaderProps) => {
           <>
             <div className="relative h-8 w-8 rounded-full flex items-center justify-center bg-gray-200 mr-2">
               {selectedContact.avatar_url ? (
-                <img
+                <Image
                   src={selectedContact.avatar_url}
                   alt="Avatar"
-                  className="h-8 w-8 rounded-full"
+                  width={32}
+                  height={32}
+                  className="rounded-full"
                 />
               ) : (
                 <IoPersonSharp className="text-white h-3 w-3 sm:h-4 sm:w-4 text-sm" />

@@ -1,13 +1,14 @@
 "use client";
 
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import { ContactItem } from "@/components/Contact";
 import { Contact } from "@/utils/chatService";
 import { IoPersonSharp } from "react-icons/io5";
 import { FiSearch } from "react-icons/fi";
 import { MdOutlineFilterList } from "react-icons/md";
 import { HiFolderArrowDown } from "react-icons/hi2";
-import { useState, useRef, useEffect } from "react";
 import { NewChatIcon } from "@/utils/Icons";
+import Image from "next/image";
 
 interface ContactsListProps {
   contacts: Contact[];
@@ -143,10 +144,12 @@ export const ContactsList = ({
                 <div className="flex items-center space-x-2 sm:space-x-3">
                   <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-blue-100 flex items-center justify-center transition-transform duration-200 ease-in-out hover:scale-105">
                     {result.avatar_url ? (
-                      <img
+                      <Image
                         src={result.avatar_url}
                         alt={result.username}
-                        className="w-8 h-8 sm:w-10 sm:h-10 rounded-full transition-opacity duration-200 ease-in-out hover:opacity-90"
+                        width={40}
+                        height={40}
+                        className="rounded-full transition-opacity duration-200 ease-in-out hover:opacity-90"
                       />
                     ) : (
                       <IoPersonSharp className="text-blue-500" size={18} />
