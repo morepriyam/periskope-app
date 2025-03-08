@@ -4,8 +4,6 @@ import React from "react";
 import { Contact } from "@/utils/chatService";
 import { IoPersonSharp } from "react-icons/io5";
 import { FiSearch } from "react-icons/fi";
-import { BsStars } from "react-icons/bs";
-import { useState } from "react";
 import { GenerateIcon } from "@/utils/Icons";
 import Image from "next/image";
 
