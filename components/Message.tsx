@@ -4,26 +4,48 @@ import { UserSentState } from "@/components/Contact";
 import { BiCheckDouble } from "react-icons/bi";
 import { MdCheck } from "react-icons/md";
 
-export const Message = ({ text, time, date, isSent, userSentState, showHeader, senderName, phoneNumber }: any) => {
+interface MessageProps {
+  text: string;
+  time: string;
+  date?: string;
+  isSent: boolean;
+  userSentState?: UserSentState;
+  showHeader?: boolean;
+  senderName?: string;
+  phoneNumber?: string;
+}
+
+export const Message = ({ 
+  text, 
+  time, 
+  date, 
+  isSent, 
+  userSentState, 
+  showHeader, 
+  senderName, 
+  phoneNumber 
+}: MessageProps) => {
   return (
     <>
       {/* Date Separator - only show when date is provided */}
       {date && (
         <div className="flex justify-center my-3">
-          <span className="text-xs bg-gray-200 px-3 py-1 rounded-full text-gray-600">
+          <time className="text-xs bg-gray-200 px-3 py-1 rounded-full text-gray-600">
             {date}
-          </span>
+          </time>
         </div>
       )}
 
       <div className={`flex ${isSent ? "justify-end" : "justify-start"} my-1`}>
-        <div className="relative max-w-xs">
+        <article className="relative max-w-xs">
           {/* Show name & phone number only on first message of the group */}
           {showHeader && !isSent && (
-            <div className="flex justify-between items-center mb-1">
+            <header className="flex justify-between items-center mb-1">
               <span className="font-bold text-green-600">{senderName}</span>
-              <span className="text-xs text-gray-500">{phoneNumber}</span>
-            </div>
+              {phoneNumber && (
+                <span className="text-xs text-gray-500">{phoneNumber}</span>
+              )}
+            </header>
           )}
 
           <div
@@ -33,24 +55,24 @@ export const Message = ({ text, time, date, isSent, userSentState, showHeader, s
           >
             <p>{text}</p>
             {/* Timestamp & Sent State */}
-            <div className="flex items-center justify-end text-xs text-gray-500 mt-1">
-              <span>{time}</span>
+            <footer className="flex items-center justify-end text-xs text-gray-500 mt-1">
+              <time>{time}</time>
               {isSent && (
                 <>
                   {userSentState === UserSentState.SENT && (
-                    <MdCheck className="text-gray-500 ml-1" />
+                    <MdCheck className="text-gray-500 ml-1" aria-label="Sent" />
                   )}
                   {userSentState === UserSentState.RECEIVED && (
-                    <BiCheckDouble className="text-gray-500 ml-1" />
+                    <BiCheckDouble className="text-gray-500 ml-1" aria-label="Delivered" />
                   )}
                   {userSentState === UserSentState.READ && (
-                    <BiCheckDouble className="text-blue-500 ml-1" />
+                    <BiCheckDouble className="text-blue-500 ml-1" aria-label="Read" />
                   )}
                 </>
               )}
-            </div>
+            </footer>
           </div>
-        </div>
+        </article>
       </div>
     </>
   );

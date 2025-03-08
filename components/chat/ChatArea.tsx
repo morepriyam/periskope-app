@@ -5,7 +5,7 @@ import { ChatHeader } from "./ChatHeader";
 import { MessageList } from "./MessageList";
 import { MessageInput } from "./MessageInput";
 import { EmptyChat } from "./EmptyChat";
-import { RefObject } from "react";
+import { RefObject, useState } from "react";
 
 interface ChatAreaProps {
   selectedContact: Contact | null;
@@ -32,13 +32,25 @@ export const ChatArea = ({
   messagesEndRef,
   onMessagesViewed
 }: ChatAreaProps) => {
+  const [isAtBottom, setIsAtBottom] = useState(true);
+  
+  // Function to scroll to the bottom of the chat
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+  
+  // Track when user scrolls away from the bottom
+  const handleScrollChange = (atBottom: boolean) => {
+    setIsAtBottom(atBottom);
+  };
+  
   return (
-    <div className="flex-1 flex flex-col h-full overflow-hidden">
+    <main className="flex-1 flex flex-col h-full overflow-hidden">
       <ChatHeader selectedContact={selectedContact} />
       
       {selectedContact ? (
         <>
-          <div className="flex-1 overflow-hidden">
+          <section className="flex-1 overflow-hidden">
             <MessageList 
               messages={messages}
               userId={userId}
@@ -46,19 +58,24 @@ export const ChatArea = ({
               currentUserName={username}
               messagesEndRef={messagesEndRef}
               onMessagesViewed={onMessagesViewed}
+              onScrollChange={handleScrollChange}
             />
-          </div>
-          <MessageInput 
-            message={newMessage}
-            setMessage={setNewMessage}
-            sendMessage={sendMessage}
-            userName={username}
-            userAvatar={userAvatar}
-          />
+          </section>
+          <footer>
+            <MessageInput 
+              message={newMessage}
+              setMessage={setNewMessage}
+              sendMessage={sendMessage}
+              userName={username}
+              userAvatar={userAvatar}
+              scrollToBottom={scrollToBottom}
+              showScrollButton={!isAtBottom}
+            />
+          </footer>
         </>
       ) : (
         <EmptyChat />
       )}
-    </div>
+    </main>
   );
 }; 
