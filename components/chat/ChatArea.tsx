@@ -15,7 +15,9 @@ interface ChatAreaProps {
   sendMessage: () => void;
   userId?: string;
   username?: string;
+  userAvatar?: string | null;
   messagesEndRef: RefObject<HTMLDivElement>;
+  onMessagesViewed?: (messageIds: string[]) => void;
 }
 
 export const ChatArea = ({
@@ -26,7 +28,9 @@ export const ChatArea = ({
   sendMessage,
   userId,
   username,
-  messagesEndRef
+  userAvatar,
+  messagesEndRef,
+  onMessagesViewed
 }: ChatAreaProps) => {
   return (
     <div className="flex-1 flex flex-col h-full overflow-hidden">
@@ -41,12 +45,15 @@ export const ChatArea = ({
               selectedContactName={selectedContact.username}
               currentUserName={username}
               messagesEndRef={messagesEndRef}
+              onMessagesViewed={onMessagesViewed}
             />
           </div>
           <MessageInput 
             message={newMessage}
             setMessage={setNewMessage}
             sendMessage={sendMessage}
+            userName={username}
+            userAvatar={userAvatar}
           />
         </>
       ) : (
