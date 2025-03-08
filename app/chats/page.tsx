@@ -38,7 +38,7 @@ const ChatsPage: React.FC = () => {
   const [newMessage, setNewMessage] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedContact, setSelectedContact] = useState<ContactType | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [, setIsLoading] = useState(false);
   const [searchResults, setSearchResults] = useState<ContactType[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [permissionError, setPermissionError] = useState(false);
