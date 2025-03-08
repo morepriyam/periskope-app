@@ -1,26 +1,16 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
-import { IoArrowDown, IoSend, IoSendSharp } from "react-icons/io5";
-import { IoAttach } from "react-icons/io5";
-import { BsEmojiSmile, BsStars } from "react-icons/bs";
+import React from "react";
+import { IoArrowDown, IoSend } from "react-icons/io5";
+import { BsEmojiSmile } from "react-icons/bs";
 import {
-  MdOutlineTimer,
-  MdRefresh,
-  MdInsertDriveFile,
-  MdMic,
-} from "react-icons/md";
-import {
-  GenerateIcon,
   GenerateOutlineIcon,
-  PeriskopeIcon,
   TextFileIcon,
 } from "@/utils/Icons";
 import { FiPaperclip } from "react-icons/fi";
 import { FaMicrophone, FaRegClock } from "react-icons/fa6";
 import { AiOutlineHistory } from "react-icons/ai";
 import { LuChevronsUpDown } from "react-icons/lu";
-import { FiChevronDown } from "react-icons/fi";
 import Image from "next/image";
 
 interface MessageInputProps {
