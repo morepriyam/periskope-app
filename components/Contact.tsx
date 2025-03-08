@@ -1,9 +1,8 @@
 import { BiCheckDouble } from "react-icons/bi";
 import { FaPhone } from "react-icons/fa6";
 import { IoPersonSharp } from "react-icons/io5";
-import { MdCheck } from "react-icons/md"; // Single tick for SENT
+import { MdCheck } from "react-icons/md";
 
-// Enum for message status
 export enum UserSentState {
   SENT = "sent",
   RECEIVED = "received",
@@ -20,6 +19,7 @@ interface ContactItemProps {
   avatar?: string;
   isMuted?: boolean;
   userSentState?: UserSentState;
+  isActive?: boolean;
 }
 
 export const ContactItem: React.FC<ContactItemProps> = ({
@@ -27,20 +27,21 @@ export const ContactItem: React.FC<ContactItemProps> = ({
   latestMessage,
   phone,
   unreadCount,
-  tags = ["Demo", "internal"],
+  tags = ["Demo", "Dont Send"],
   date,
   avatar,
   isMuted = false,
   userSentState,
+  isActive = false,
 }) => {
   return (
-    <div className="flex items-center justify-between bg-white hover:bg-gray-100 cursor-pointer rounded-sm">
+    <div className={`flex items-center justify-between ${isActive ? 'bg-gray-100' : 'bg-white'} hover:bg-gray-100 rounded-sm transition-all duration-200 ease-in-out`}>
       {/* Left Section - Profile Icon and Contact Info */}
       <div className="flex items-center space-x-2 p-2">
         {/* Profile Picture */}
-        <div className="relative transform -translate-y-1.5 h-10 w-10 rounded-full flex items-center justify-center bg-gray-200">
+        <div className="relative transform -translate-y-1.5 h-10 w-10 rounded-full flex items-center justify-center bg-gray-200 hover:shadow-md transition-shadow duration-200 ease-in-out">
           {avatar ? (
-            <img src={avatar} alt="Avatar" className="h-10 w-10 rounded-full" />
+            <img src={avatar} alt="Avatar" className="h-10 w-10 rounded-full hover:opacity-90 transition-opacity duration-200" />
           ) : (
             <IoPersonSharp className="text-white h-4 w-4 text-sm" />
           )}
@@ -64,7 +65,7 @@ export const ContactItem: React.FC<ContactItemProps> = ({
                 )}
               </>
             )}
-            <p className="text-xs text-gray-500 truncate w-20 lg:w-50 px-0.5">
+            <p className="text-xs text-gray-500 truncate w-20 lg:w-40 px-0.5">
               {latestMessage}
             </p>
           </div>
@@ -81,16 +82,16 @@ export const ContactItem: React.FC<ContactItemProps> = ({
           {tags.map((tag, index) => (
             <span
               key={index}
-              className={`text-xs px-1 py-0.5 rounded-md ${
+              className={`text-xs px-1 py-0.5 rounded-md hover:scale-105 cursor-default transition-transform duration-150 ease-in-out ${
                 tag === "Demo"
-                  ? "bg-orange-50 text-stone-400"
+                  ? "bg-orange-50 text-stone-400 hover:bg-orange-100"
                   : tag === "internal"
-                  ? "bg-green-100 text-green-700"
-                  : tag === "Signup"
-                  ? "bg-green-100 text-green-700"
-                  : tag === "Dont Send"
-                  ? "bg-red-50 text-red-500"
-                  : "bg-gray-100 text-brown-400"
+                    ? "bg-green-100 text-green-700 hover:bg-green-200"
+                    : tag === "Signup"
+                      ? "bg-green-100 text-green-700 hover:bg-green-200"
+                      : tag === "Dont Send"
+                        ? "bg-red-50 text-red-500 hover:bg-red-100"
+                        : "bg-gray-100 text-brown-400 hover:bg-gray-200"
               }`}
             >
               {tag}
@@ -98,19 +99,15 @@ export const ContactItem: React.FC<ContactItemProps> = ({
           ))}
         </div>
 
-        <div className="flex absolute bottom-3 gap-0.5">
+        <div className="flex absolute items-center bottom-3 gap-1">
           {/* Unread Count */}
           {unreadCount && unreadCount > 0 ? (
-            <span className="text-xs bg-emerald-400 text-white px-1 rounded-full">
+            <span className="text-xs flex relative bottom-0.5 font-semibold items-center justify-center bg-emerald-400 text-white h-4  w-4 p-1 rounded-full">
               {unreadCount}
             </span>
           ) : null}
-          <div className="relative h-4 w-4 bottom-0.5 rounded-full flex items-center justify-center bg-gray-200">
-            {avatar ? (
-              <img src={avatar} alt="Avatar" className="h-4 w-4 rounded-full" />
-            ) : (
-              <IoPersonSharp className="text-white h-2 w-2" />
-            )}
+          <div className="relative h-4 w-4 bottom-0.5 rounded-full flex items-center justify-center bg-gray-200 hover:bg-green-600 transition-colors duration-200 group cursor-pointer">
+            <IoPersonSharp className="text-white h-2 w-2 group-hover:text-white group-hover:scale-110 transition-transform duration-200" />
           </div>
         </div>
 

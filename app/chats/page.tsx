@@ -8,6 +8,29 @@ import { ContactsList } from "@/components/chat/ContactsList";
 import { ChatArea } from "@/components/chat/ChatArea";
 import { FiArrowLeft } from "react-icons/fi";
 
+const formatMessageDate = (dateString: string): string => {
+  if (!dateString) return '';
+  
+  const date = new Date(dateString);
+  const today = new Date();
+  
+  if (date.getDate() === today.getDate() && 
+      date.getMonth() === today.getMonth() && 
+      date.getFullYear() === today.getFullYear()) {
+    return 'Today';
+  }
+  
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  if (date.getDate() === yesterday.getDate() && 
+      date.getMonth() === yesterday.getMonth() && 
+      date.getFullYear() === yesterday.getFullYear()) {
+    return 'Yesterday';
+  }
+  
+  return date.toLocaleDateString();
+};
+
 const ChatsPage: React.FC = () => {
   const { user, profile } = useAuth();
   const [contacts, setContacts] = useState<ContactType[]>([]);
@@ -24,11 +47,31 @@ const ChatsPage: React.FC = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatService = useRef(new ChatService()).current;
 
-  // When a contact is selected on mobile, hide the contacts list
   useEffect(() => {
     if (selectedContact && window.innerWidth < 768) {
       setShowContactsOnMobile(false);
     }
+  }, [selectedContact]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const wasDesktop = window.innerWidth >= 768;
+      const isMobile = window.innerWidth < 768;
+      
+      if (wasDesktop && isMobile && selectedContact) {
+        setSelectedContact(null);
+        setShowContactsOnMobile(true);
+      }
+      else if (window.innerWidth >= 768) {
+        setShowContactsOnMobile(true);
+      } 
+      else if (window.innerWidth < 768 && selectedContact) {
+        setShowContactsOnMobile(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, [selectedContact]);
 
   useEffect(() => {
@@ -47,6 +90,17 @@ const ChatsPage: React.FC = () => {
       }
       
       loadContacts();
+    }, (updatedMessage) => {
+      if (selectedContact && 
+         (updatedMessage.sender_id === selectedContact.id || updatedMessage.receiver_id === selectedContact.id)) {
+        setMessages(prev => 
+          prev.map(msg => 
+            msg.id === updatedMessage.id ? updatedMessage : msg
+          )
+        );
+      }
+      
+      loadContacts();
     });
 
     return () => {
@@ -55,14 +109,10 @@ const ChatsPage: React.FC = () => {
   }, [user?.id, selectedContact]);
 
   useEffect(() => {
-    if (selectedContact && user?.id) {
+    if (user?.id && selectedContact) {
       loadMessages(selectedContact.id);
     }
-  }, [selectedContact, user?.id]);
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+  }, [user?.id, selectedContact]);
 
   const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -136,6 +186,29 @@ const ChatsPage: React.FC = () => {
       if (sentMessage) {
         setMessages(prev => [...prev, sentMessage]);
         setNewMessage("");
+        
+        loadContacts();
+        
+        if (selectedContact) {
+          const now = new Date().toISOString();
+          const updatedContact = {
+            ...selectedContact,
+            latestMessage: newMessage.trim(),
+            lastMessageDate: formatMessageDate(now),
+            lastMessageTimestamp: now
+          };
+          setSelectedContact(updatedContact);
+          
+          setContacts(prevContacts => {
+            const filteredContacts = prevContacts.filter(c => c.id !== selectedContact.id);
+            const updatedContacts = [updatedContact, ...filteredContacts];
+            return updatedContacts.sort((a, b) => {
+              if (!a.lastMessageTimestamp) return 1;
+              if (!b.lastMessageTimestamp) return -1;
+              return new Date(b.lastMessageTimestamp).getTime() - new Date(a.lastMessageTimestamp).getTime();
+            });
+          });
+        }
       }
     } catch (error) {
       console.error("Error sending message:", error);
@@ -144,9 +217,17 @@ const ChatsPage: React.FC = () => {
 
   const handleContactSelect = (contact: ContactType) => {
     setSelectedContact(contact);
+    if (window.innerWidth < 768) {
+      setShowContactsOnMobile(false);
+    }
     setIsSearching(false);
     setSearchResults([]);
     setSearchQuery("");
+  };
+
+  const handleContactDeselect = () => {
+    setSelectedContact(null);
+    setShowContactsOnMobile(true);
   };
 
   const handleSearchUsers = async () => {
@@ -180,17 +261,29 @@ const ChatsPage: React.FC = () => {
     }
   };
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  const handleMessagesViewed = async (messageIds: string[]) => {
+    if (!user?.id || !selectedContact || messageIds.length === 0) return;
+    
+    const messagesToMark = messages
+      .filter(msg => 
+        messageIds.includes(msg.id) && 
+        msg.sender_id === selectedContact.id && 
+        msg.receiver_id === user.id &&
+        msg.status !== 'read'
+      )
+      .map(msg => msg.id);
+    
+    if (messagesToMark.length > 0) {
+      await chatService.markSpecificMessagesAsRead(messagesToMark);
+    }
   };
 
   const handleBackToContacts = () => {
-    setShowContactsOnMobile(true);
+    handleContactDeselect();
   };
 
   return (
     <div className="flex h-full relative">
-      {/* Contact list - hidden on mobile when chat is open */}
       <div className={`${!showContactsOnMobile ? 'hidden md:block' : 'block'} w-full md:w-80 lg:w-96 h-full overflow-hidden`}>
         <ContactsList 
           contacts={contacts}
@@ -198,6 +291,7 @@ const ChatsPage: React.FC = () => {
           setSearchQuery={setSearchQuery}
           handleSearchUsers={handleSearchUsers}
           handleContactSelect={handleContactSelect}
+          handleContactDeselect={handleContactDeselect}
           handleAddContact={handleAddContact}
           selectedContact={selectedContact}
           searchResults={searchResults}
@@ -207,10 +301,9 @@ const ChatsPage: React.FC = () => {
         />
       </div>
 
-      {/* Chat area - shown on mobile only when a contact is selected */}
       <div className={`${showContactsOnMobile ? 'hidden md:flex' : 'flex'} flex-col flex-1 h-full overflow-hidden`}>
         {selectedContact && (
-          <div className="md:hidden absolute top-3 left-3 z-10">
+          <div className="md:hidden absolute top-16 left-3 z-10">
             <button 
               onClick={handleBackToContacts}
               className="p-2 rounded-full bg-white shadow-md"
@@ -228,14 +321,17 @@ const ChatsPage: React.FC = () => {
           sendMessage={sendMessage}
           userId={user?.id}
           username={profile?.username}
+          userAvatar={profile?.avatar_url}
           messagesEndRef={messagesEndRef as React.RefObject<HTMLDivElement>}
+          onMessagesViewed={handleMessagesViewed}
         />
       </div>
 
-      {/* Rightbar - shown only on large screens */}
-      <div className="hidden lg:block h-full overflow-hidden">
-        <Rightbar contact={selectedContact} />
-      </div>
+      {selectedContact && (
+        <div className={`${showContactsOnMobile ? 'hidden md:block' : 'block'} h-full overflow-hidden`}>
+          <Rightbar contact={selectedContact} />
+        </div>
+      )}
     </div>
   );
 };

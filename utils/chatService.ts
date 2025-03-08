@@ -47,6 +47,7 @@ export type Contact = {
   unreadCount?: number;
   userSentState?: UserSentState;
   lastMessageDate?: string;
+  lastMessageTimestamp?: string; // Add timestamp for sorting
 };
 
 export class ChatService {
@@ -170,6 +171,8 @@ export class ChatService {
             
           const latestMessage = messageData && messageData[0] ? messageData[0].content : '';
           const lastMessageDate = messageData && messageData[0] ? formatMessageDate(messageData[0].created_at) : '';
+          // Store the actual timestamp for sorting
+          const lastMessageTimestamp = messageData && messageData[0] ? messageData[0].created_at : '';
           
           let userSentState: UserSentState | undefined;
           if (messageData && messageData[0]) {
@@ -191,11 +194,19 @@ export class ChatService {
             unreadCount: unreadCount || 0,
             userSentState,
             lastMessageDate,
+            lastMessageTimestamp, // Add the full timestamp for sorting
           };
         })
       );
       
-      return contacts;
+      // Sort contacts by last message timestamp, most recent first
+      const sortedContacts = contacts.sort((a, b) => {
+        if (!a.lastMessageTimestamp) return 1; // If no timestamp, move to end
+        if (!b.lastMessageTimestamp) return -1; // If other has no timestamp, it goes to end
+        return new Date(b.lastMessageTimestamp).getTime() - new Date(a.lastMessageTimestamp).getTime();
+      });
+      
+      return sortedContacts;
     } catch (error) {
       console.error('Error fetching contacts:', error);
       return [];
@@ -214,20 +225,6 @@ export class ChatService {
     if (error) {
       console.error('Error fetching messages:', error);
       return [];
-    }
-    
-    // Mark messages as read
-    if (data && data.length > 0) {
-      const unreadMessages = data.filter(
-        message => message.receiver_id === userId && message.status !== 'read'
-      );
-      
-      if (unreadMessages.length > 0) {
-        await this.supabase
-          .from('messages')
-          .update({ status: 'read' })
-          .in('id', unreadMessages.map(msg => msg.id));
-      }
     }
     
     return data || [];
@@ -257,7 +254,8 @@ export class ChatService {
   // Subscribe to new messages
   subscribeToMessages(
     userId: string, 
-    onNewMessage: (message: Message) => void
+    onNewMessage: (message: Message) => void,
+    onMessageStatusChange: (message: Message) => void
   ) {
     // Unsubscribe from previous subscription if exists
     this.unsubscribeFromMessages();
@@ -282,6 +280,18 @@ export class ChatService {
             .then(() => {
               onNewMessage(newMessage);
             });
+        }
+      )
+      .on(
+        'postgres_changes',
+        { 
+          event: 'UPDATE', 
+          schema: 'public', 
+          table: 'messages'
+        },
+        (payload) => {
+          const updatedMessage = payload.new as Message;
+          onMessageStatusChange(updatedMessage);
         }
       )
       .subscribe();
@@ -343,5 +353,33 @@ export class ChatService {
       username: profile.username,
       avatar_url: profile.avatar_url,
     }));
+  }
+  
+  // Mark messages as read when a conversation is viewed
+  async markMessagesAsRead(userId: string, contactId: string): Promise<void> {
+    const { error } = await this.supabase
+      .from('messages')
+      .update({ status: 'read' })
+      .eq('sender_id', contactId)
+      .eq('receiver_id', userId)
+      .not('status', 'eq', 'read');
+      
+    if (error) {
+      console.error('Error marking messages as read:', error);
+    }
+  }
+  
+  // Mark specific messages as read by their IDs
+  async markSpecificMessagesAsRead(messageIds: string[]): Promise<void> {
+    if (messageIds.length === 0) return;
+    
+    const { error } = await this.supabase
+      .from('messages')
+      .update({ status: 'read' })
+      .in('id', messageIds);
+      
+    if (error) {
+      console.error('Error marking specific messages as read:', error);
+    }
   }
 } 

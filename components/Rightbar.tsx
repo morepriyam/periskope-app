@@ -1,21 +1,16 @@
 "use client";
 
-import { AnalyticsIcon, BroadcastIcon, RulesIcon } from "@/utils/Icons";
+import { CollapseIcon, IntegrationIcon, MembersIcon, OverviewIcon, PropertiesIcon } from "@/utils/Icons";
 import { Contact } from "@/utils/chatService";
 import { IconType } from "react-icons";
-import { AiFillHome } from "react-icons/ai";
-import { BsGearFill } from "react-icons/bs";
-import { FaListUl } from "react-icons/fa";
-import { IoChatbubbleEllipses, IoTicket } from "react-icons/io5";
-import { MdChecklist } from "react-icons/md";
-import { RiContactsBookFill, RiFolderImageFill } from "react-icons/ri";
-import SidebarNavLink from "./SidebarNavLink";
+import { MdAlternateEmail } from "react-icons/md";
+import { RiFolderImageFill, RiListSettingsLine } from "react-icons/ri";
+import { LuRefreshCw } from "react-icons/lu";
+import { FiEdit3 } from "react-icons/fi";
 
 interface MenuItem {
-    href?: string;
     icon?: IconType;
     divider?: boolean;
-    isNew?: boolean;
     isImplemented?: boolean;
 }
 
@@ -24,33 +19,31 @@ interface RightbarProps {
 }
 
 const menuItems: MenuItem[] = [
-  { href: "/dashboard", icon: AiFillHome, isImplemented: false },
-  { href: "/chats", icon: IoChatbubbleEllipses, isImplemented: true },
-  { href: "/tickets", icon: IoTicket, isImplemented: false },
-  { href: "/analytics", icon: AnalyticsIcon, isImplemented: false },
-  { href: "/list", icon: FaListUl, isImplemented: false },
-  { href: "/broadcast", icon: BroadcastIcon, isImplemented: false },
-  { href: "/rules", icon: RulesIcon, isImplemented: false },
-  { href: "/contacts", icon: RiContactsBookFill, isImplemented: false },
-  { href: "/media", icon: RiFolderImageFill, isImplemented: false },
-  { href: "/logs", icon: MdChecklist, isImplemented: false },
-  { href: "/settings", icon: BsGearFill, isImplemented: false },
+  { icon: CollapseIcon, isImplemented: false },
+  { icon: LuRefreshCw, isImplemented: true },
+  { icon: FiEdit3, isImplemented: false },
+  { icon: OverviewIcon, isImplemented: false },
+  { icon: PropertiesIcon, isImplemented: false },
+  { icon: IntegrationIcon, isImplemented: false },
+  { icon: MembersIcon, isImplemented: false },
+  { icon: MdAlternateEmail, isImplemented: false },
+  { icon: RiFolderImageFill, isImplemented: false },
+  { icon: RiListSettingsLine, isImplemented: false },
 ];
 
 
 const Rightbar: React.FC<RightbarProps> = ({ contact }) => {
     return (
-        <aside className="w-14 border-l border-gray-200 p-2 flex flex-col gap-2 h-full">
+        <aside className="w-14 border-l pt-10 border-gray-200 p-2 flex flex-col gap-4 h-full">
           {menuItems.map(
-            (item) =>
-              item.href && item.icon && (
-                <SidebarNavLink
-                  key={item.href}
-                  href={item.href}
-                  icon={item.icon}
-                  isNew={item.isNew}
-                  isImplemented={item.isImplemented}
-                />
+            (item, index) =>
+              item.icon && (
+                <button
+                  key={index}
+                  className="w-full p-1.5 rounded-md cursor-pointer hover:bg-gray-100 text-gray-500 flex items-center justify-center relative"
+                >
+                  <item.icon className="h-5 w-5" />
+                </button>
               )
           )}
         </aside>
