@@ -1,5 +1,6 @@
 "use client";
 
+import React, { useState, useRef, useEffect } from "react";
 import { IoArrowDown, IoSend, IoSendSharp } from "react-icons/io5";
 import { IoAttach } from "react-icons/io5";
 import { BsEmojiSmile, BsStars } from "react-icons/bs";
@@ -20,6 +21,7 @@ import { FaMicrophone, FaRegClock } from "react-icons/fa6";
 import { AiOutlineHistory } from "react-icons/ai";
 import { LuChevronsUpDown } from "react-icons/lu";
 import { FiChevronDown } from "react-icons/fi";
+import Image from "next/image";
 
 interface MessageInputProps {
   message: string;
@@ -126,10 +128,12 @@ export const MessageInput = ({
           </ul>
           <button className="flex items-center px-1 py-0.5 ml-2 text-black text-sm bg-white border border-gray-300 rounded-md hover:bg-gray-100 transition whitespace-nowrap cursor-pointer" aria-label="User profile">
             {userAvatar ? (
-              <img
+              <Image
                 src={userAvatar}
                 alt={userName || "User"}
-                className="h-4 w-4 rounded-full mr-2"
+                width={16}
+                height={16}
+                className="rounded-full mr-2"
               />
             ) : (
               <span className="h-4 w-4 bg-yellow-400 rounded-full mr-2" />

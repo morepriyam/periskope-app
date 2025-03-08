@@ -322,6 +322,7 @@ const ChatsPage: React.FC = () => {
           userId={user?.id}
           username={profile?.username}
           userAvatar={profile?.avatar_url}
+          userPhone={profile?.phone || undefined}
           messagesEndRef={messagesEndRef as React.RefObject<HTMLDivElement>}
           onMessagesViewed={handleMessagesViewed}
         />

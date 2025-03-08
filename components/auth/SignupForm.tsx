@@ -20,6 +20,11 @@ export const SignupForm = () => {
   
   const supabase = createBrowserSupabaseClient();
 
+  // Function to generate a UI Avatar URL from username
+  const generateUIAvatarUrl = (username: string) => {
+    return `https://ui-avatars.com/api/?name=${encodeURIComponent(username)}&background=random`;
+  };
+
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -64,13 +69,16 @@ export const SignupForm = () => {
         return;
       }
       
+      // Use UI Avatar if no avatar URL is provided
+      const finalAvatarUrl = avatarUrl.trim() ? avatarUrl : generateUIAvatarUrl(username);
+      
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
         password,
         options: {
           data: {
             username,
-            avatar_url: avatarUrl,
+            avatar_url: finalAvatarUrl,
             phone,
           },
         },
@@ -212,7 +220,12 @@ export const SignupForm = () => {
             onChange={(e) => setAvatarUrl(e.target.value)}
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 text-sm"
             autoComplete="off"
+            placeholder="https://avatars.githubusercontent.com/yourusername"
           />
+          <div className="mt-1 text-xs text-gray-500">
+            <p>Only GitHub avatar URLs are supported (e.g., https://avatars.githubusercontent.com/yourusername)</p>
+            <p className="mt-0.5">If left empty, an avatar will be automatically generated from your username</p>
+          </div>
         </div>
         
         <div>

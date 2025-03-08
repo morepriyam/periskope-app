@@ -16,6 +16,7 @@ interface ChatAreaProps {
   userId?: string;
   username?: string;
   userAvatar?: string | null;
+  userPhone?: string;
   messagesEndRef: RefObject<HTMLDivElement>;
   onMessagesViewed?: (messageIds: string[]) => void;
 }
@@ -29,6 +30,7 @@ export const ChatArea = ({
   userId,
   username,
   userAvatar,
+  userPhone,
   messagesEndRef,
   onMessagesViewed
 }: ChatAreaProps) => {
@@ -55,7 +57,9 @@ export const ChatArea = ({
               messages={messages}
               userId={userId}
               selectedContactName={selectedContact.username}
+              selectedContactPhone={selectedContact.phone}
               currentUserName={username}
+              currentUserPhone={userPhone}
               messagesEndRef={messagesEndRef}
               onMessagesViewed={onMessagesViewed}
               onScrollChange={handleScrollChange}

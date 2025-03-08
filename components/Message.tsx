@@ -12,7 +12,7 @@ interface MessageProps {
   userSentState?: UserSentState;
   showHeader?: boolean;
   senderName?: string;
-  phoneNumber?: string;
+  phone?: string;
 }
 
 export const Message = ({ 
@@ -23,7 +23,7 @@ export const Message = ({
   userSentState, 
   showHeader, 
   senderName, 
-  phoneNumber 
+  phone 
 }: MessageProps) => {
   return (
     <>
@@ -38,24 +38,24 @@ export const Message = ({
 
       <div className={`flex ${isSent ? "justify-end" : "justify-start"} my-1`}>
         <article className="relative max-w-xs">
-          {/* Show name & phone number only on first message of the group */}
-          {showHeader && !isSent && (
-            <header className="flex justify-between items-center mb-1">
-              <span className="font-bold text-green-600">{senderName}</span>
-              {phoneNumber && (
-                <span className="text-xs text-gray-500">{phoneNumber}</span>
-              )}
-            </header>
-          )}
-
           <div
-            className={`relative p-2 rounded-lg text-sm ${
+            className={`relative p-2 rounded-lg text-sm min-w-[7.5rem] ${
               isSent ? "bg-green-100 text-black" : "bg-white text-black"
             } shadow`}
           >
-            <p>{text}</p>
+            {/* Show name & phone number only when showHeader is true */}
+            {showHeader && senderName && (
+              <header className="flex justify-between items-center h-4 mb-1">
+                <span className="font-semibold text-green-600">{senderName}</span>
+                {phone && (
+                  <span className="text-xs ml-2 text-gray-500 break-all">{phone}</span>
+                )}
+              </header>
+            )}
+            
+            <p className="break-words whitespace-pre-wrap">{text}</p>
             {/* Timestamp & Sent State */}
-            <footer className="flex items-center justify-end text-xs text-gray-500 mt-1">
+            <footer className="flex items-center justify-end text-xs text-gray-500">
               <time>{time}</time>
               {isSent && (
                 <>

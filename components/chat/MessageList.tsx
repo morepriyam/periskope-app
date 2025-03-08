@@ -9,7 +9,9 @@ interface MessageListProps {
   messages: MessageType[];
   userId?: string;
   selectedContactName?: string;
+  selectedContactPhone?: string;
   currentUserName?: string;
+  currentUserPhone?: string;
   messagesEndRef: RefObject<HTMLDivElement>;
   onMessagesViewed?: (messageIds: string[]) => void;
   onScrollChange?: (isAtBottom: boolean) => void;
@@ -55,7 +57,9 @@ export const MessageList = ({
   messages, 
   userId, 
   selectedContactName, 
+  selectedContactPhone,
   currentUserName,
+  currentUserPhone,
   messagesEndRef,
   onMessagesViewed,
   onScrollChange 
@@ -162,6 +166,11 @@ export const MessageList = ({
             const showDate = index === 0 || !isSameDay(msg.created_at, messages[index - 1].created_at);
             const dateText = showDate ? formatMessageDate(msg.created_at) : undefined;
             
+            // Determine if this is the first message in a group from the same sender
+            const isFirstInGroup = index === 0 || 
+              messages[index - 1].sender_id !== msg.sender_id ||
+              showDate; // If the date changes, we should also show the header
+            
             return (
               <article 
                 key={msg.id}
@@ -194,8 +203,9 @@ export const MessageList = ({
                           : UserSentState.SENT
                       : undefined
                   }
-                  showHeader={false}
+                  showHeader={isFirstInGroup}
                   senderName={msg.sender_id === userId ? currentUserName : selectedContactName}
+                  phone={msg.sender_id === userId ? currentUserPhone : selectedContactPhone}
                 />
               </article>
             );
