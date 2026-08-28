@@ -4,11 +4,11 @@ import { usePathname } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
 import Navbar from "@/components/Navbar";
 
-/** App chrome (sidebar + navbar) everywhere except the public landing page. */
+/** App chrome (sidebar + navbar) everywhere except public pages (landing + auth). */
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
-  if (pathname === "/") {
+  if (pathname === "/" || pathname.startsWith("/auth/")) {
     return <div className="h-screen overflow-y-auto bg-white">{children}</div>;
   }
 
