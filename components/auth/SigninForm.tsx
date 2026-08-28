@@ -46,7 +46,7 @@ export const SigninForm = () => {
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
-        options: { redirectTo: `${window.location.origin}/` },
+        options: { redirectTo: `${window.location.origin}/chats` },
       });
       if (error) throw error;
     } catch (error: unknown) {
@@ -67,7 +67,7 @@ export const SigninForm = () => {
         password,
       });
       if (error) throw error;
-      router.push("/");
+      router.push("/chats");
       router.refresh();
     } catch (error: unknown) {
       setError(
@@ -87,7 +87,7 @@ export const SigninForm = () => {
         password: DEMO_PASSWORD,
       });
       if (error) throw error;
-      router.push("/");
+      router.push("/chats");
       router.refresh();
     } catch (error: unknown) {
       setError(
