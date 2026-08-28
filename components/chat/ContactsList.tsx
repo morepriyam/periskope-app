@@ -22,6 +22,7 @@ interface ContactsListProps {
   permissionError: boolean;
   loadContacts: () => void;
   onlineIds?: Set<string>;
+  isLoading?: boolean;
 }
 
 export const ContactsList = ({
@@ -38,6 +39,7 @@ export const ContactsList = ({
   permissionError,
   loadContacts,
   onlineIds,
+  isLoading,
 }: ContactsListProps) => {
   const [showSearchInput, setShowSearchInput] = useState(false);
   const [filterUnread, setFilterUnread] = useState(false);
@@ -241,6 +243,18 @@ export const ContactsList = ({
               Try Again
             </button>
           </div>
+        ) : isLoading && contacts.length === 0 ? (
+          <ul className="animate-pulse">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <li key={i} className="flex items-center gap-2 p-2">
+                <div className="h-10 w-10 rounded-full bg-gray-200" />
+                <div className="flex-1 space-y-2">
+                  <div className="h-3 w-1/3 rounded bg-gray-200" />
+                  <div className="h-2.5 w-2/3 rounded bg-gray-100" />
+                </div>
+              </li>
+            ))}
+          </ul>
         ) : displayedContacts.length > 0 ? (
           displayedContacts.map((contact) => (
             <div

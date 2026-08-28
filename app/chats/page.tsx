@@ -39,7 +39,7 @@ const ChatsPage: React.FC = () => {
   const [newMessage, setNewMessage] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedContact, setSelectedContact] = useState<ContactType | null>(null);
-  const [, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [searchResults, setSearchResults] = useState<ContactType[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [permissionError, setPermissionError] = useState(false);
@@ -47,6 +47,7 @@ const ChatsPage: React.FC = () => {
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatService = useRef(new ChatService()).current;
+  const loadingRef = useRef(false);
 
   const { onlineIds, typingIds, sendTyping } = usePresence(user?.id);
 
@@ -124,8 +125,9 @@ const ChatsPage: React.FC = () => {
   const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
   const loadContacts = async () => {
-    if (!user?.id) return;
-    
+    if (!user?.id || loadingRef.current) return;
+
+    loadingRef.current = true;
     setIsLoading(true);
     setPermissionError(false);
     try {
@@ -165,6 +167,7 @@ const ChatsPage: React.FC = () => {
       }
     } finally {
       setIsLoading(false);
+      loadingRef.current = false;
     }
   };
 
@@ -308,6 +311,7 @@ const ChatsPage: React.FC = () => {
           permissionError={permissionError}
           loadContacts={loadContacts}
           onlineIds={onlineIds}
+          isLoading={isLoading}
         />
       </div>
 

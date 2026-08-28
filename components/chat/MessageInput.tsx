@@ -66,7 +66,21 @@ export const MessageInput = ({
       )}
       
       {/* Message input container */}
-      <div className="border-t border-gray-200 py-2.5">
+      <div className="relative z-30 border-t border-gray-200 py-2.5">
+        {showEmoji && (
+          <div className="absolute bottom-16 left-3 z-50 grid grid-cols-5 gap-1 rounded-lg border border-gray-200 bg-white p-2 shadow-lg">
+            {EMOJIS.map((emoji) => (
+              <button
+                key={emoji}
+                type="button"
+                onClick={() => setMessage(message + emoji)}
+                className="h-7 w-7 rounded hover:bg-gray-100 text-lg leading-none"
+              >
+                {emoji}
+              </button>
+            ))}
+          </div>
+        )}
         <form onSubmit={handleSubmit} className="flex items-center px-2 sm:px-4 mx-auto">
           <input
             type="text"
@@ -96,7 +110,7 @@ export const MessageInput = ({
                 <FiPaperclip className="h-4 w-4 text-gray-700" />
               </button>
             </li>
-            <li className="relative">
+            <li>
               <button
                 type="button"
                 onClick={() => setShowEmoji((prev) => !prev)}
@@ -105,20 +119,6 @@ export const MessageInput = ({
               >
                 <BsEmojiSmile className="h-4 w-4" />
               </button>
-              {showEmoji && (
-                <div className="absolute bottom-8 left-0 z-20 grid grid-cols-5 gap-1 rounded-lg border border-gray-200 bg-white p-2 shadow-lg">
-                  {EMOJIS.map((emoji) => (
-                    <button
-                      key={emoji}
-                      type="button"
-                      onClick={() => setMessage(message + emoji)}
-                      className="h-7 w-7 rounded hover:bg-gray-100 text-lg leading-none"
-                    >
-                      {emoji}
-                    </button>
-                  ))}
-                </div>
-              )}
             </li>
             <li className="hidden sm:block">
               <button className="focus:outline-none flex-shrink-0 cursor-pointer" aria-label="Schedule message">

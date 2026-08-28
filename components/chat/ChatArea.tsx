@@ -65,7 +65,7 @@ export const ChatArea = ({
       
       {selectedContact ? (
         <>
-          <section className="flex-1 overflow-hidden">
+          <section className="relative z-0 flex-1 overflow-hidden">
             <MessageList 
               messages={messages}
               userId={userId}
@@ -80,7 +80,7 @@ export const ChatArea = ({
               searchTerm={searchTerm}
             />
           </section>
-          <footer>
+          <footer className="relative z-40">
             <MessageInput 
               message={newMessage}
               setMessage={setNewMessage}
