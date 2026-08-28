@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { IoArrowDown, IoSend } from "react-icons/io5";
 import { BsEmojiSmile } from "react-icons/bs";
 import {
@@ -21,7 +21,13 @@ interface MessageInputProps {
   userName?: string | null;
   scrollToBottom?: () => void;
   showScrollButton?: boolean;
+  onType?: () => void;
 }
+
+const EMOJIS = [
+  "😀", "😂", "😅", "😍", "😎", "🤝", "👍", "🙏", "🎉", "🔥",
+  "✅", "❤️", "👋", "💯", "🚀", "😊", "🙌", "👀", "💬", "⏰",
+];
 
 export const MessageInput = ({
   message,
@@ -31,7 +37,9 @@ export const MessageInput = ({
   userName,
   scrollToBottom,
   showScrollButton = false,
+  onType,
 }: MessageInputProps) => {
+  const [showEmoji, setShowEmoji] = useState(false);
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,7 +73,10 @@ export const MessageInput = ({
             className="flex-1 py-2 sm:py-2.5 px-3 font-medium sm:px-4 rounded-3xl text-md h-10 focus:outline-none"
             placeholder="Message..."
             value={message}
-            onChange={(e) => setMessage(e.target.value)}
+            onChange={(e) => {
+              setMessage(e.target.value);
+              onType?.();
+            }}
             aria-label="Type a message"
           />
           <button
@@ -85,10 +96,29 @@ export const MessageInput = ({
                 <FiPaperclip className="h-4 w-4 text-gray-700" />
               </button>
             </li>
-            <li>
-              <button className="focus:outline-none flex-shrink-0 cursor-pointer" aria-label="Emoji">
-                <BsEmojiSmile className="h-4 w-4 text-gray-700" />
+            <li className="relative">
+              <button
+                type="button"
+                onClick={() => setShowEmoji((prev) => !prev)}
+                className={`focus:outline-none flex-shrink-0 cursor-pointer ${showEmoji ? "text-green-600" : "text-gray-700"}`}
+                aria-label="Emoji"
+              >
+                <BsEmojiSmile className="h-4 w-4" />
               </button>
+              {showEmoji && (
+                <div className="absolute bottom-8 left-0 z-20 grid grid-cols-5 gap-1 rounded-lg border border-gray-200 bg-white p-2 shadow-lg">
+                  {EMOJIS.map((emoji) => (
+                    <button
+                      key={emoji}
+                      type="button"
+                      onClick={() => setMessage(message + emoji)}
+                      className="h-7 w-7 rounded hover:bg-gray-100 text-lg leading-none"
+                    >
+                      {emoji}
+                    </button>
+                  ))}
+                </div>
+              )}
             </li>
             <li className="hidden sm:block">
               <button className="focus:outline-none flex-shrink-0 cursor-pointer" aria-label="Schedule message">

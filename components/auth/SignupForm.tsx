@@ -97,8 +97,10 @@ export const SignupForm = () => {
           router.push("/auth/signin");
         }
       }
-    } catch (error: any) {
-      setError(error.message || "An error occurred during sign up");
+    } catch (error: unknown) {
+      setError(
+        error instanceof Error ? error.message : "An error occurred during sign up",
+      );
       console.error("Signup error:", error);
     } finally {
       setLoading(false);
@@ -106,7 +108,7 @@ export const SignupForm = () => {
   };
 
   return (
-    <div className="w-full max-w-md p-4 sm:p-8 space-y-6 sm:space-y-8 bg-white rounded-lg shadow-md overflow-y-auto max-h-screen sm:max-h-none">
+    <div className="w-full max-w-md space-y-6 sm:space-y-8 overflow-y-auto max-h-screen sm:max-h-none">
       <div className="text-center">
         <div className="flex justify-center mb-4">
           <PeriskopeIcon className="h-16 sm:h-20 w-16 sm:w-20" />

@@ -24,6 +24,7 @@ interface ContactItemProps {
   isMuted?: boolean;
   userSentState?: UserSentState;
   isActive?: boolean;
+  isOnline?: boolean;
 }
 
 export const ContactItem: React.FC<ContactItemProps> = ({
@@ -37,6 +38,7 @@ export const ContactItem: React.FC<ContactItemProps> = ({
   isMuted = false,
   userSentState,
   isActive = false,
+  isOnline = false,
 }) => {
   return (
     <div className={`flex items-center justify-between ${isActive ? 'bg-gray-100' : 'bg-white'} hover:bg-gray-100 rounded-sm transition-all duration-200 ease-in-out`}>
@@ -54,6 +56,9 @@ export const ContactItem: React.FC<ContactItemProps> = ({
             />
           ) : (
             <IoPersonSharp className="text-white h-4 w-4 text-sm" />
+          )}
+          {isOnline && (
+            <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-green-500 ring-2 ring-white" />
           )}
         </div>
         {/* Contact Details */}

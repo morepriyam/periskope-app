@@ -14,8 +14,8 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const pathname = usePathname();
 
   useEffect(() => {
-    // Skip this check for auth pages
-    if (pathname.startsWith("/auth/") || loading) {
+    // Skip this check for public pages (landing + auth)
+    if (pathname === "/" || pathname.startsWith("/auth/") || loading) {
       return;
     }
 
@@ -33,8 +33,8 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
     );
   }
 
-  // Allow rendering on auth pages regardless of authentication status
-  if (pathname.startsWith("/auth/")) {
+  // Allow rendering on public pages regardless of authentication status
+  if (pathname === "/" || pathname.startsWith("/auth/")) {
     return <>{children}</>;
   }
 

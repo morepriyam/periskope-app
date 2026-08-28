@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Sidebar from "@/components/Sidebar";
-import Navbar from "@/components/Navbar";
+import AppShell from "@/components/AppShell";
 import { AuthProvider } from "@/utils/AuthProvider";
 import ProtectedRoute from "@/components/ProtectedRoute";
 
@@ -33,14 +32,7 @@ export default function RootLayout({
       >
         <AuthProvider>
           <ProtectedRoute>
-            <div className="flex h-screen">
-              <Sidebar />
-
-              <div className="flex flex-col flex-1 overflow-hidden">
-                <Navbar />
-                <div className="flex-1 overflow-auto bg-white">{children}</div>
-              </div>
-            </div>
+            <AppShell>{children}</AppShell>
           </ProtectedRoute>
         </AuthProvider>
       </body>

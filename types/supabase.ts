@@ -25,6 +25,7 @@ export type Database = {
           phone?: string | null;
           updated_at?: string | null;
         };
+        Relationships: [];
       };
       messages: {
         Row: {
@@ -51,6 +52,7 @@ export type Database = {
           created_at?: string;
           status?: 'sent' | 'received' | 'read';
         };
+        Relationships: [];
       };
       contacts: {
         Row: {
@@ -71,6 +73,7 @@ export type Database = {
           contact_id?: string;
           created_at?: string;
         };
+        Relationships: [];
       };
     };
     Views: {
@@ -80,6 +83,9 @@ export type Database = {
       [_ in never]: never;
     };
     Enums: {
+      [_ in never]: never;
+    };
+    CompositeTypes: {
       [_ in never]: never;
     };
   };
