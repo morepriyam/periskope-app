@@ -63,7 +63,7 @@ function Bubble({
 /** Decorative product preview shown beside the auth form on desktop (dummy data). */
 export function AuthPreview() {
   return (
-    <div className="hidden lg:block w-full max-w-xl shrink-0">
+    <div className="w-full">
       <div className="rounded-2xl border border-black/5 bg-white shadow-2xl overflow-hidden rotate-[0.6deg]">
         {/* window bar */}
         <div className="flex items-center gap-1.5 px-4 py-2.5 border-b border-gray-100 bg-gray-50">
@@ -73,7 +73,7 @@ export function AuthPreview() {
           <span className="ml-3 text-xs text-gray-400">periskope · inbox</span>
         </div>
 
-        <div className="flex h-[420px]">
+        <div className="flex h-[520px]">
           {/* conversation list */}
           <aside className="w-[38%] border-r border-gray-100 overflow-hidden">
             {CHATS.map((c) => (
@@ -159,7 +159,7 @@ export function AuthPreview() {
           </section>
         </div>
       </div>
-      <p className="mt-4 text-center text-xs text-gray-500">
+      <p className="mt-4 text-center text-xs text-green-100/60">
         A live preview — the demo account looks just like this.
       </p>
     </div>

@@ -7,21 +7,26 @@ import { PeriskopeIcon } from "@/utils/Icons";
 
 export default function SignInPage() {
   return (
-    <div
-      className="relative min-h-screen bg-[#efeae2]"
-      style={{ backgroundImage: "url('/whatsapp-bg.png')", backgroundRepeat: "repeat" }}
-    >
-      <Link
-        href="/"
-        className="absolute top-6 left-6 sm:left-12 lg:left-16 z-10 flex items-center gap-2"
+    <div className="relative min-h-screen flex flex-col lg:flex-row">
+      {/* Form column — cream doodle background */}
+      <div
+        className="relative lg:w-[34%] flex items-center justify-center px-6 sm:px-10 py-24 lg:py-20 bg-[#efeae2]"
+        style={{ backgroundImage: "url('/whatsapp-bg.png')", backgroundRepeat: "repeat" }}
       >
-        <PeriskopeIcon className="h-8 w-8" />
-        <span className="font-bold text-xl tracking-tight text-green-800">
-          periskope
-        </span>
-      </Link>
-      <div className="mx-auto max-w-7xl min-h-screen flex items-center justify-center lg:justify-between gap-10 px-6 sm:px-12 lg:px-16 py-20">
+        <Link
+          href="/"
+          className="absolute top-6 left-6 sm:left-10 z-10 flex items-center gap-2"
+        >
+          <PeriskopeIcon className="h-8 w-8" />
+          <span className="font-bold text-xl tracking-tight text-green-800">
+            periskope
+          </span>
+        </Link>
         <SigninForm />
+      </div>
+
+      {/* Preview column — brand dark-green panel (desktop only) */}
+      <div className="hidden lg:flex lg:w-[66%] items-center justify-center bg-[#041200] px-10 xl:px-16 py-20">
         <AuthPreview />
       </div>
     </div>
