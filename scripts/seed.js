@@ -106,15 +106,25 @@ async function main() {
   console.log("Seeding demo users…");
   const existing = await listAllUsers();
 
-  await ensureUser(DEMO, existing);
-  for (const p of PEOPLE) await ensureUser(p, existing);
+  const people = [DEMO, ...PEOPLE];
+  const idOf = {};
+  for (const u of people) {
+    idOf[u.user_metadata.username] = await ensureUser(u, existing);
+  }
 
-  // Map username -> profile id (triggers create profiles + auto-connect contacts).
-  const { data: profiles, error: perr } = await admin
+  // Ensure a profile row exists for every user (backfills when the auth trigger
+  // didn't run, e.g. users created before the schema). The profile INSERT
+  // trigger also wires up the contacts between everyone.
+  const profileRows = people.map((u) => ({
+    id: idOf[u.user_metadata.username],
+    username: u.user_metadata.username,
+    avatar_url: u.user_metadata.avatar_url,
+    phone: u.user_metadata.phone,
+  }));
+  const { error: upErr } = await admin
     .from("profiles")
-    .select("id, username");
-  if (perr) throw perr;
-  const idOf = Object.fromEntries(profiles.map((p) => [p.username, p.id]));
+    .upsert(profileRows, { onConflict: "id" });
+  if (upErr) throw upErr;
 
   console.log("Resetting demo conversations…");
   await admin.from("messages").delete().neq("id", "00000000-0000-0000-0000-000000000000");
