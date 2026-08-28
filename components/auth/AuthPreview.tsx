@@ -159,7 +159,7 @@ export function AuthPreview() {
           </section>
         </div>
       </div>
-      <p className="mt-4 text-center text-xs text-green-100/60">
+      <p className="mt-4 text-center text-xs text-white/70">
         A live preview — the demo account looks just like this.
       </p>
     </div>
