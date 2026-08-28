@@ -26,7 +26,7 @@ export default function SignInPage() {
       </div>
 
       {/* Preview column — brand dark-green panel (desktop only) */}
-      <div className="hidden lg:flex lg:w-[66%] items-center justify-center bg-gradient-to-br from-green-500 via-green-600 to-green-700 px-10 xl:px-16 py-20">
+      <div className="hidden lg:flex lg:w-[66%] items-center justify-center bg-white px-10 xl:px-16 py-20">
         <AuthPreview />
       </div>
     </div>
