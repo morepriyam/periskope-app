@@ -99,7 +99,7 @@ export const SigninForm = () => {
   };
 
   return (
-    <div className="w-full max-w-md p-6 sm:p-8 space-y-6 bg-white rounded-xl shadow-md">
+    <div className="w-full max-w-md space-y-6">
       <div className="text-center">
         <div className="flex justify-center mb-4">
           <PeriskopeIcon className="h-14 sm:h-16 w-14 sm:w-16" />
@@ -135,7 +135,7 @@ export const SigninForm = () => {
               <div className="w-full border-t border-gray-200" />
             </div>
             <div className="relative flex justify-center text-xs">
-              <span className="bg-white px-2 text-gray-400">or</span>
+              <span className="bg-[#efeae2] px-2 text-gray-400">or</span>
             </div>
           </div>
 
