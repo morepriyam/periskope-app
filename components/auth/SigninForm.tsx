@@ -107,7 +107,7 @@ export const SigninForm = () => {
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
           Log in to Periskope
         </h1>
-        <p className="mt-2 text-sm text-gray-500">
+        <p className="mt-2 text-sm text-black">
           Manage your chats, contacts, and conversations
         </p>
       </div>
@@ -155,7 +155,7 @@ export const SigninForm = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your official email address"
-                className="mt-1 block w-full px-3 py-2.5 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 text-sm"
+                className="mt-1 block w-full px-3 py-2.5 border border-gray-300 rounded-md shadow-sm bg-white focus:outline-none focus:ring-green-500 focus:border-green-500 text-sm"
                 autoComplete="email"
               />
             </div>
@@ -204,7 +204,7 @@ export const SigninForm = () => {
               autoFocus
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 block w-full px-3 py-2.5 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 text-sm"
+              className="mt-1 block w-full px-3 py-2.5 border border-gray-300 rounded-md shadow-sm bg-white focus:outline-none focus:ring-green-500 focus:border-green-500 text-sm"
               autoComplete="current-password"
             />
           </div>
@@ -248,7 +248,7 @@ export const SigninForm = () => {
         </p>
       </div>
 
-      <p className="text-center text-xs text-gray-400">
+      <p className="text-center text-xs text-black">
         By continuing you agree to Periskope&apos;s{" "}
         <a
           href="https://periskope.app/terms"
