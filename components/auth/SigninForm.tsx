@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { FcGoogle } from "react-icons/fc";
 import { FiArrowLeft } from "react-icons/fi";
@@ -14,7 +13,6 @@ const DEMO_EMAIL = "demo@periskope.morepriyam.com";
 const DEMO_PASSWORD = "demodemo";
 
 export const SigninForm = () => {
-  const router = useRouter();
   const [step, setStep] = useState<"email" | "password">("email");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -46,7 +44,7 @@ export const SigninForm = () => {
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
-        options: { redirectTo: `${window.location.origin}/` },
+        options: { redirectTo: `${window.location.origin}/chats` },
       });
       if (error) throw error;
     } catch (error: unknown) {
@@ -67,8 +65,8 @@ export const SigninForm = () => {
         password,
       });
       if (error) throw error;
-      router.push("/");
-      router.refresh();
+      // Hard navigation so middleware + AuthProvider pick up the new session cookie.
+      window.location.assign("/chats");
     } catch (error: unknown) {
       setError(
         error instanceof Error ? error.message : "An error occurred during sign in",
@@ -87,8 +85,7 @@ export const SigninForm = () => {
         password: DEMO_PASSWORD,
       });
       if (error) throw error;
-      router.push("/");
-      router.refresh();
+      window.location.assign("/chats");
     } catch (error: unknown) {
       setError(
         error instanceof Error ? error.message : "Could not open the demo",
