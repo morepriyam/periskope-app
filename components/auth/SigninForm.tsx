@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createBrowserSupabaseClient } from "@/utils/supabase-client";
@@ -17,6 +17,12 @@ export const SigninForm = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [highlightDemo, setHighlightDemo] = useState(false);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("demo")) setHighlightDemo(true);
+  }, []);
   
   const supabase = createBrowserSupabaseClient();
 
@@ -156,11 +162,19 @@ export const SigninForm = () => {
         </div>
       </div>
 
+      {highlightDemo && (
+        <p className="text-center text-sm font-semibold text-green-700 -mb-3">
+          👇 One click — no account needed
+        </p>
+      )}
+
       <button
         type="button"
         onClick={handleDemoSignIn}
         disabled={loading}
-        className="w-full flex justify-center py-2 px-4 border border-green-600 rounded-md text-sm font-medium text-green-700 bg-white hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50"
+        className={`w-full flex justify-center py-2.5 px-4 border-2 border-green-600 rounded-md text-sm font-bold text-green-700 bg-white hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 ${
+          highlightDemo ? "ring-2 ring-green-400 ring-offset-2 animate-pulse" : ""
+        }`}
       >
         Try the live demo — no signup
       </button>
