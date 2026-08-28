@@ -3,7 +3,7 @@
 import { Message as MessageType } from "@/utils/chatService";
 import { Message } from "@/components/Message";
 import { UserSentState } from "@/components/Contact";
-import { RefObject, useEffect, useRef, useState } from "react";
+import { Fragment, RefObject, useEffect, useRef, useState } from "react";
 
 interface MessageListProps {
   messages: MessageType[];
@@ -15,6 +15,8 @@ interface MessageListProps {
   messagesEndRef: RefObject<HTMLDivElement>;
   onMessagesViewed?: (messageIds: string[]) => void;
   onScrollChange?: (isAtBottom: boolean) => void;
+  isTyping?: boolean;
+  searchTerm?: string;
 }
 
 const formatMessageDate = (dateString: string): string => {
@@ -62,7 +64,9 @@ export const MessageList = ({
   currentUserPhone,
   messagesEndRef,
   onMessagesViewed,
-  onScrollChange 
+  onScrollChange,
+  isTyping = false,
+  searchTerm = "",
 }: MessageListProps) => {
   const [viewedMessages, setViewedMessages] = useState<Set<string>>(new Set());
   const [isAtBottom, setIsAtBottom] = useState(true);
@@ -147,6 +151,16 @@ export const MessageList = ({
     }
   }, []);
 
+  const term = searchTerm.trim().toLowerCase();
+  const displayed = term
+    ? messages.filter((m) => m.content.toLowerCase().includes(term))
+    : messages;
+  const firstUnreadIndex = term
+    ? -1
+    : displayed.findIndex(
+        (m) => m.receiver_id === userId && m.status !== "read",
+      );
+
   return (
     <section 
       ref={containerRef}
@@ -162,55 +176,80 @@ export const MessageList = ({
     >
       <div className="flex flex-col min-h-full">
         <div className="flex-1">
-          {messages.map((msg, index) => {
-            const showDate = index === 0 || !isSameDay(msg.created_at, messages[index - 1].created_at);
+          {term && displayed.length === 0 && (
+            <div className="flex justify-center my-6">
+              <span className="text-xs bg-gray-200 px-3 py-1 rounded-full text-gray-600">
+                No messages match “{searchTerm}”
+              </span>
+            </div>
+          )}
+          {displayed.map((msg, index) => {
+            const showDate = index === 0 || !isSameDay(msg.created_at, displayed[index - 1].created_at);
             const dateText = showDate ? formatMessageDate(msg.created_at) : undefined;
             
             // Determine if this is the first message in a group from the same sender
             const isFirstInGroup = index === 0 || 
-              messages[index - 1].sender_id !== msg.sender_id ||
+              displayed[index - 1].sender_id !== msg.sender_id ||
               showDate; // If the date changes, we should also show the header
             
             return (
-              <article 
-                key={msg.id}
-                className={showDate && dateText ? "date-section" : ""}
-                ref={el => {
-                  if (el && msg.receiver_id === userId && msg.status !== 'read') {
-                    messageRefs.current.set(msg.id, el);
-                  }
-                }}
-                data-message-id={msg.id}
-              >
-                {showDate && dateText && (
-                  <header className="flex justify-center my-3">
-                    <time className="text-xs bg-gray-200 px-3 py-1 rounded-full text-gray-600" dateTime={new Date(msg.created_at).toISOString().split('T')[0]}>
-                      {dateText}
-                    </time>
-                  </header>
+              <Fragment key={msg.id}>
+                {index === firstUnreadIndex && firstUnreadIndex > 0 && (
+                  <div className="flex justify-center my-3">
+                    <span className="text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full font-medium">
+                      Unread messages
+                    </span>
+                  </div>
                 )}
-                <Message
-                  text={msg.content}
-                  time={new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                  date={undefined} // Since we're now handling dates in the article header
-                  isSent={msg.sender_id === userId}
-                  userSentState={
-                    msg.sender_id === userId 
-                      ? msg.status === 'read' 
-                        ? UserSentState.READ 
-                        : msg.status === 'received' 
-                          ? UserSentState.RECEIVED 
-                          : UserSentState.SENT
-                      : undefined
-                  }
-                  showHeader={isFirstInGroup}
-                  senderName={msg.sender_id === userId ? currentUserName : selectedContactName}
-                  phone={msg.sender_id === userId ? currentUserPhone : selectedContactPhone}
-                />
-              </article>
+                <article 
+                  className={showDate && dateText ? "date-section" : ""}
+                  ref={el => {
+                    if (el && msg.receiver_id === userId && msg.status !== 'read') {
+                      messageRefs.current.set(msg.id, el);
+                    }
+                  }}
+                  data-message-id={msg.id}
+                >
+                  {showDate && dateText && (
+                    <header className="flex justify-center my-3">
+                      <time className="text-xs bg-gray-200 px-3 py-1 rounded-full text-gray-600" dateTime={new Date(msg.created_at).toISOString().split('T')[0]}>
+                        {dateText}
+                      </time>
+                    </header>
+                  )}
+                  <Message
+                    text={msg.content}
+                    time={new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    date={undefined} // Since we're now handling dates in the article header
+                    isSent={msg.sender_id === userId}
+                    userSentState={
+                      msg.sender_id === userId 
+                        ? msg.status === 'read' 
+                          ? UserSentState.READ 
+                          : msg.status === 'received' 
+                            ? UserSentState.RECEIVED 
+                            : UserSentState.SENT
+                        : undefined
+                    }
+                    showHeader={isFirstInGroup}
+                    senderName={msg.sender_id === userId ? currentUserName : selectedContactName}
+                    phone={msg.sender_id === userId ? currentUserPhone : selectedContactPhone}
+                    highlight={term ? searchTerm : undefined}
+                  />
+                </article>
+              </Fragment>
             );
           })}
         </div>
+        {isTyping && (
+          <div className="flex justify-start my-1 px-1">
+            <div className="bg-white shadow rounded-lg px-3 py-2 flex items-center gap-1">
+              <span className="h-1.5 w-1.5 bg-gray-400 rounded-full animate-bounce" />
+              <span className="h-1.5 w-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:0.15s]" />
+              <span className="h-1.5 w-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:0.3s]" />
+            </div>
+          </div>
+        )}
         <div ref={messagesEndRef} />
       </div>
     </section>

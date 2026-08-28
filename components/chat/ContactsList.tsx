@@ -21,6 +21,7 @@ interface ContactsListProps {
   isSearching: boolean;
   permissionError: boolean;
   loadContacts: () => void;
+  onlineIds?: Set<string>;
 }
 
 export const ContactsList = ({
@@ -36,6 +37,7 @@ export const ContactsList = ({
   isSearching,
   permissionError,
   loadContacts,
+  onlineIds,
 }: ContactsListProps) => {
   const [showSearchInput, setShowSearchInput] = useState(false);
   const [filterUnread, setFilterUnread] = useState(false);
@@ -260,6 +262,7 @@ export const ContactsList = ({
                 avatar={contact.avatar_url || undefined}
                 userSentState={contact.userSentState}
                 isActive={selectedContact?.id === contact.id}
+                isOnline={onlineIds?.has(contact.id)}
               />
             </div>
           ))

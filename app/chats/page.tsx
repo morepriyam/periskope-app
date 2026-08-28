@@ -6,6 +6,7 @@ import { ChatService, Contact as ContactType, Message as MessageType } from "@/u
 import Rightbar from "@/components/Rightbar";
 import { ContactsList } from "@/components/chat/ContactsList";
 import { ChatArea } from "@/components/chat/ChatArea";
+import { usePresence } from "@/utils/usePresence";
 import { FiArrowLeft } from "react-icons/fi";
 
 const formatMessageDate = (dateString: string): string => {
@@ -46,6 +47,12 @@ const ChatsPage: React.FC = () => {
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatService = useRef(new ChatService()).current;
+
+  const { onlineIds, typingIds, sendTyping } = usePresence(user?.id);
+
+  const handleTyping = () => {
+    if (selectedContact) sendTyping(selectedContact.id);
+  };
 
   useEffect(() => {
     if (selectedContact && window.innerWidth < 768) {
@@ -300,6 +307,7 @@ const ChatsPage: React.FC = () => {
           isSearching={isSearching}
           permissionError={permissionError}
           loadContacts={loadContacts}
+          onlineIds={onlineIds}
         />
       </div>
 
@@ -327,6 +335,9 @@ const ChatsPage: React.FC = () => {
           userPhone={profile?.phone || undefined}
           messagesEndRef={messagesEndRef as React.RefObject<HTMLDivElement>}
           onMessagesViewed={handleMessagesViewed}
+          isContactOnline={selectedContact ? onlineIds.has(selectedContact.id) : false}
+          isContactTyping={selectedContact ? typingIds.has(selectedContact.id) : false}
+          onType={handleTyping}
         />
       </div>
 

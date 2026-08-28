@@ -13,7 +13,25 @@ interface MessageProps {
   showHeader?: boolean;
   senderName?: string;
   phone?: string;
+  highlight?: string;
 }
+
+// Wraps occurrences of `highlight` within text in a <mark> (case-insensitive).
+const renderText = (text: string, highlight?: string) => {
+  const term = highlight?.trim();
+  if (!term) return text;
+  const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const parts = text.split(new RegExp(`(${escaped})`, "gi"));
+  return parts.map((part, i) =>
+    part.toLowerCase() === term.toLowerCase() ? (
+      <mark key={i} className="bg-yellow-200 rounded px-0.5">
+        {part}
+      </mark>
+    ) : (
+      <span key={i}>{part}</span>
+    ),
+  );
+};
 
 export const Message = ({ 
   text, 
@@ -23,7 +41,8 @@ export const Message = ({
   userSentState, 
   showHeader, 
   senderName, 
-  phone 
+  phone,
+  highlight,
 }: MessageProps) => {
   return (
     <>
@@ -53,7 +72,7 @@ export const Message = ({
               </header>
             )}
             
-            <p className="break-words whitespace-pre-wrap">{text}</p>
+            <p className="break-words whitespace-pre-wrap">{renderText(text, highlight)}</p>
             {/* Timestamp & Sent State */}
             <footer className="flex items-center justify-end text-xs text-gray-500">
               <time>{time}</time>

@@ -19,6 +19,9 @@ interface ChatAreaProps {
   userPhone?: string;
   messagesEndRef: RefObject<HTMLDivElement>;
   onMessagesViewed?: (messageIds: string[]) => void;
+  isContactOnline?: boolean;
+  isContactTyping?: boolean;
+  onType?: () => void;
 }
 
 export const ChatArea = ({
@@ -32,9 +35,13 @@ export const ChatArea = ({
   userAvatar,
   userPhone,
   messagesEndRef,
-  onMessagesViewed
+  onMessagesViewed,
+  isContactOnline = false,
+  isContactTyping = false,
+  onType,
 }: ChatAreaProps) => {
   const [isAtBottom, setIsAtBottom] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
   
   // Function to scroll to the bottom of the chat
   const scrollToBottom = () => {
@@ -48,7 +55,13 @@ export const ChatArea = ({
   
   return (
     <main className="flex-1 flex flex-col h-full overflow-hidden">
-      <ChatHeader selectedContact={selectedContact} />
+      <ChatHeader
+        selectedContact={selectedContact}
+        isOnline={isContactOnline}
+        isTyping={isContactTyping}
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+      />
       
       {selectedContact ? (
         <>
@@ -63,6 +76,8 @@ export const ChatArea = ({
               messagesEndRef={messagesEndRef}
               onMessagesViewed={onMessagesViewed}
               onScrollChange={handleScrollChange}
+              isTyping={isContactTyping}
+              searchTerm={searchTerm}
             />
           </section>
           <footer>
@@ -74,6 +89,7 @@ export const ChatArea = ({
               userAvatar={userAvatar}
               scrollToBottom={scrollToBottom}
               showScrollButton={!isAtBottom}
+              onType={onType}
             />
           </footer>
         </>
