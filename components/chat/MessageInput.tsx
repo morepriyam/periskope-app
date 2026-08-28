@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { IoArrowDown, IoSend } from "react-icons/io5";
 import { BsEmojiSmile } from "react-icons/bs";
 import {
@@ -40,6 +40,20 @@ export const MessageInput = ({
   onType,
 }: MessageInputProps) => {
   const [showEmoji, setShowEmoji] = useState(false);
+  const emojiRef = useRef<HTMLDivElement>(null);
+  const emojiBtnRef = useRef<HTMLButtonElement>(null);
+
+  // Close the emoji picker when clicking anywhere outside it.
+  useEffect(() => {
+    if (!showEmoji) return;
+    const onPointerDown = (e: MouseEvent) => {
+      const target = e.target as Node;
+      if (emojiRef.current?.contains(target) || emojiBtnRef.current?.contains(target)) return;
+      setShowEmoji(false);
+    };
+    document.addEventListener("mousedown", onPointerDown);
+    return () => document.removeEventListener("mousedown", onPointerDown);
+  }, [showEmoji]);
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -68,7 +82,10 @@ export const MessageInput = ({
       {/* Message input container */}
       <div className="relative z-30 border-t border-gray-200 py-2.5">
         {showEmoji && (
-          <div className="absolute bottom-16 left-3 z-50 grid grid-cols-5 gap-1 rounded-lg border border-gray-200 bg-white p-2 shadow-lg">
+          <div
+            ref={emojiRef}
+            className="absolute bottom-16 left-3 z-50 grid grid-cols-5 gap-1 rounded-lg border border-gray-200 bg-white p-2 shadow-lg"
+          >
             {EMOJIS.map((emoji) => (
               <button
                 key={emoji}
@@ -112,6 +129,7 @@ export const MessageInput = ({
             </li>
             <li>
               <button
+                ref={emojiBtnRef}
                 type="button"
                 onClick={() => setShowEmoji((prev) => !prev)}
                 className={`focus:outline-none flex-shrink-0 cursor-pointer ${showEmoji ? "text-green-600" : "text-gray-700"}`}
