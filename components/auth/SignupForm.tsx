@@ -90,7 +90,7 @@ export const SignupForm = () => {
         if (authData.session) {
           setSuccess("Account created successfully! Redirecting to app...");
           await new Promise(resolve => setTimeout(resolve, 2000));
-          router.push("/chats");
+          window.location.assign("/chats");
         } else {
           setSuccess("Account created! Please check your email for confirmation before signing in.");
           await new Promise(resolve => setTimeout(resolve, 3000));
