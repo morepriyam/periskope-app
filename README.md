@@ -95,7 +95,25 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 - Run the SQL from `supabase-schema.sql` in the SQL editor to set up the database schema
 - Set up authentication providers in the Supabase dashboard
 
-5. **Run the development server**
+5. **Seed the demo data (optional)**
+
+Copy `.env.example` to `.env` and fill in `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`
+(Settings → API in the dashboard), then:
+
+```bash
+npm run seed
+```
+
+This creates a set of confirmed users and a public demo account
+(`demo@periskope.morepriyam.com` / `demodemo`) pre-loaded with conversations.
+The signin page's **"Try the live demo"** button logs straight into that account.
+
+A GitHub Actions workflow (`.github/workflows/demo-keepalive.yml`) pings the
+database daily to keep a free project from auto-pausing and re-runs the seed so
+the demo never rots. It needs three repo secrets: `SUPABASE_URL`,
+`SUPABASE_ANON_KEY`, and `SUPABASE_SERVICE_ROLE_KEY`.
+
+6. **Run the development server**
 
 ```bash
 npm run dev

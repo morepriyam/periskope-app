@@ -7,6 +7,10 @@ import { createBrowserSupabaseClient } from "@/utils/supabase-client";
 import { PeriskopeIcon } from "@/utils/Icons";
 import { validateEmail } from "@/utils/validationUtils";
 
+// Public demo account seeded by scripts/seed.js — intentionally shareable.
+const DEMO_EMAIL = "demo@periskope.morepriyam.com";
+const DEMO_PASSWORD = "demodemo";
+
 export const SigninForm = () => {
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -39,6 +43,24 @@ export const SigninForm = () => {
       router.refresh();
     } catch (error: any) {
       setError(error.message || "An error occurred during sign in");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDemoSignIn = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email: DEMO_EMAIL,
+        password: DEMO_PASSWORD,
+      });
+      if (error) throw error;
+      router.push("/");
+      router.refresh();
+    } catch (error: any) {
+      setError(error.message || "Could not open the demo");
     } finally {
       setLoading(false);
     }
@@ -120,7 +142,25 @@ export const SigninForm = () => {
           </button>
         </div>
       </form>
-      
+
+      <div className="relative">
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-gray-200" />
+        </div>
+        <div className="relative flex justify-center text-xs">
+          <span className="bg-white px-2 text-gray-400">or</span>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        onClick={handleDemoSignIn}
+        disabled={loading}
+        className="w-full flex justify-center py-2 px-4 border border-green-600 rounded-md text-sm font-medium text-green-700 bg-white hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50"
+      >
+        Try the live demo — no signup
+      </button>
+
       <div className="text-center mt-4">
         <p className="text-sm text-gray-600">
           Don't have an account?{" "}
