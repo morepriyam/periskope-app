@@ -1,4 +1,5 @@
 import { Database } from '@/types/supabase';
+import type { RealtimeChannel } from '@supabase/supabase-js';
 import { createBrowserSupabaseClient } from './supabase-client';
 import { UserSentState } from '@/components/Contact';
 
@@ -52,7 +53,7 @@ export type Contact = {
 
 export class ChatService {
   private supabase = createBrowserSupabaseClient();
-  private messageSubscription: any = null;
+  private messageSubscription: RealtimeChannel | null = null;
   private permissionIssue = false;
   
   // Helper method to check if user is authenticated

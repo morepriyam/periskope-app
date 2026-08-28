@@ -1,4 +1,6 @@
-export const AnalyticsIcon = (props: any) => (
+import type { SVGProps } from "react";
+
+export const AnalyticsIcon = (props: SVGProps<SVGSVGElement>) => (
   <svg
     {...props}
     fill="currentColor"
@@ -13,7 +15,7 @@ export const AnalyticsIcon = (props: any) => (
   </svg>
 );
 
-export const BroadcastIcon = (props: any) => (
+export const BroadcastIcon = (props: SVGProps<SVGSVGElement>) => (
   <svg
     {...props}
     fill="currentColor"
@@ -28,7 +30,7 @@ export const BroadcastIcon = (props: any) => (
   </svg>
 );
 
-export const RulesIcon = (props: any) => (
+export const RulesIcon = (props: SVGProps<SVGSVGElement>) => (
   <svg
     {...props}
     fill="currentColor"
@@ -45,7 +47,7 @@ export const RulesIcon = (props: any) => (
   </svg>
 );
 
-export const CollapseIcon = (props: any) => (
+export const CollapseIcon = (props: SVGProps<SVGSVGElement>) => (
   <svg
     {...props}
     fill="currentColor"

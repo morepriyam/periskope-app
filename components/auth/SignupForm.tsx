@@ -97,8 +97,10 @@ export const SignupForm = () => {
           router.push("/auth/signin");
         }
       }
-    } catch (error: any) {
-      setError(error.message || "An error occurred during sign up");
+    } catch (error: unknown) {
+      setError(
+        error instanceof Error ? error.message : "An error occurred during sign up",
+      );
       console.error("Signup error:", error);
     } finally {
       setLoading(false);

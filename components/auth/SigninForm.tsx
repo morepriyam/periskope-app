@@ -41,8 +41,10 @@ export const SigninForm = () => {
 
       router.push("/");
       router.refresh();
-    } catch (error: any) {
-      setError(error.message || "An error occurred during sign in");
+    } catch (error: unknown) {
+      setError(
+        error instanceof Error ? error.message : "An error occurred during sign in",
+      );
     } finally {
       setLoading(false);
     }
@@ -59,8 +61,10 @@ export const SigninForm = () => {
       if (error) throw error;
       router.push("/");
       router.refresh();
-    } catch (error: any) {
-      setError(error.message || "Could not open the demo");
+    } catch (error: unknown) {
+      setError(
+        error instanceof Error ? error.message : "Could not open the demo",
+      );
     } finally {
       setLoading(false);
     }
@@ -163,7 +167,7 @@ export const SigninForm = () => {
 
       <div className="text-center mt-4">
         <p className="text-sm text-gray-600">
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <Link href="/auth/signup" className="font-medium text-green-600 hover:text-green-500">
             Sign up
           </Link>

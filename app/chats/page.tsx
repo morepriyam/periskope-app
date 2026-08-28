@@ -130,14 +130,15 @@ const ChatsPage: React.FC = () => {
         try {
           contactsList = await chatService.getContacts(user.id);
           break;
-        } catch (error: any) {
+        } catch (error: unknown) {
           console.log(`Attempt ${attempts + 1} failed, retrying...`);
           attempts++;
-          
-          if (error?.message?.includes('permission denied')) {
+
+          const message = error instanceof Error ? error.message : String(error);
+          if (message.includes('permission denied')) {
             permissionIssue = true;
           }
-          
+
           if (attempts < 3) {
             await sleep(1000);
           }
@@ -149,9 +150,10 @@ const ChatsPage: React.FC = () => {
       }
       
       setContacts(contactsList);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error loading contacts:", error);
-      if (error?.message?.includes('permission denied')) {
+      const message = error instanceof Error ? error.message : String(error);
+      if (message.includes('permission denied')) {
         setPermissionError(true);
       }
     } finally {
