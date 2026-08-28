@@ -27,6 +27,7 @@ const avatar = (name, bg = "random") =>
 
 // The public demo account — the "Try the demo" button on the signin page uses these.
 const DEMO = {
+  key: "demo",
   email: "demo@periskope.morepriyam.com",
   password: "demodemo",
   user_metadata: {
@@ -36,40 +37,56 @@ const DEMO = {
   },
 };
 
+// `key` is an internal slug (used for the email + id lookup); `username` is the
+// real display name shown in the UI.
 const PEOPLE = [
-  ["sarah_johnson", "Sarah Johnson", "+1 555-123-4001"],
-  ["michael_brown", "Michael Brown", "+1 555-123-4002"],
-  ["emily_davis", "Emily Davis", "+1 555-123-4003"],
-  ["david_wilson", "David Wilson", "+1 555-123-4004"],
-  ["jennifer_martinez", "Jennifer Martinez", "+1 555-123-4005"],
-  ["james_taylor", "James Taylor", "+1 555-123-4006"],
-  ["sophia_anderson", "Sophia Anderson", "+1 555-123-4007"],
-  ["alex_thomas", "Alex Thomas", "+1 555-123-4008"],
-].map(([username, name, phone]) => ({
-  email: `${username}@example.com`,
+  ["sarah", "Sarah Johnson", "+1 555-123-4001"],
+  ["michael", "Michael Brown", "+1 555-123-4002"],
+  ["emily", "Emily Davis", "+1 555-123-4003"],
+  ["david", "David Wilson", "+1 555-123-4004"],
+  ["jennifer", "Jennifer Martinez", "+1 555-123-4005"],
+  ["james", "James Taylor", "+1 555-123-4006"],
+  ["sophia", "Sophia Anderson", "+1 555-123-4007"],
+  ["alex", "Alex Thomas", "+1 555-123-4008"],
+].map(([key, name, phone]) => ({
+  key,
+  email: `${key}@example.com`,
   password: "SecurePass123!",
-  user_metadata: { username, avatar_url: avatar(name), phone },
+  user_metadata: { username: name, avatar_url: avatar(name), phone },
 }));
 
-// Conversations with the demo account. `from` is a username or "demo".
+// Conversations with the demo account. `from` is a person's key or "demo".
 // minsAgo = how long ago the message was sent (drives ordering + timestamps).
+// People not listed here are left with no messages (empty chats).
 const THREADS = [
-  { with: "sarah_johnson", messages: [
-    { from: "sarah_johnson", text: "Hey! Did the Periskope rebuild go out?", minsAgo: 240, status: "read" },
-    { from: "demo", text: "Just shipped it — pixel-perfect from the one screenshot 😄", minsAgo: 236, status: "read" },
-    { from: "sarah_johnson", text: "Incredible turnaround. The team is impressed.", minsAgo: 232, status: "read" },
+  { with: "sarah", messages: [
+    { from: "sarah", text: "Hey! Did the Periskope rebuild go out?", minsAgo: 300, status: "read" },
+    { from: "demo", text: "Just shipped it — pixel-perfect from a single screenshot 😄", minsAgo: 296, status: "read" },
+    { from: "sarah", text: "Incredible turnaround. The whole team is impressed.", minsAgo: 292, status: "read" },
+    { from: "demo", text: "Thanks! Realtime, presence and typing indicators are all live too.", minsAgo: 288, status: "read" },
+    { from: "sarah", text: "Let's demo it to the client on Friday 🚀", minsAgo: 284, status: "read" },
   ]},
-  { with: "michael_brown", messages: [
-    { from: "michael_brown", text: "Can you add the unread filter to the inbox?", minsAgo: 180, status: "read" },
-    { from: "demo", text: "Done — it's the toggle up top. Try it now.", minsAgo: 176, status: "read" },
-    { from: "michael_brown", text: "Works great 🙌", minsAgo: 170, status: "received" },
+  { with: "michael", messages: [
+    { from: "michael", text: "Can you add an unread filter to the inbox?", minsAgo: 220, status: "read" },
+    { from: "demo", text: "Done — it's the toggle at the top of the chat list.", minsAgo: 216, status: "read" },
+    { from: "michael", text: "Perfect, exactly what I needed 🙌", minsAgo: 210, status: "read" },
+    { from: "michael", text: "One more — can we tag contacts as Lead / Customer?", minsAgo: 120, status: "received" },
   ]},
-  { with: "emily_davis", messages: [
-    { from: "emily_davis", text: "Realtime feels instant. What's the stack?", minsAgo: 90, status: "read" },
-    { from: "demo", text: "Next.js + Supabase channels, with optimistic inserts on the client.", minsAgo: 86, status: "received" },
+  { with: "emily", messages: [
+    { from: "emily", text: "Realtime feels instant. What's the stack?", minsAgo: 150, status: "read" },
+    { from: "demo", text: "Next.js + Supabase channels, with optimistic inserts on the client.", minsAgo: 146, status: "read" },
+    { from: "emily", text: "Nice. And how do the green online dots work?", minsAgo: 142, status: "read" },
+    { from: "demo", text: "Supabase Presence for online status, Broadcast for typing 👌", minsAgo: 138, status: "received" },
   ]},
-  { with: "james_taylor", messages: [
-    { from: "james_taylor", text: "Welcome to Periskope 👋", minsAgo: 30, status: "read" },
+  { with: "david", messages: [
+    { from: "david", text: "Hi, is the WhatsApp API integration ready for our account?", minsAgo: 95, status: "read" },
+    { from: "demo", text: "Yes! You can connect up to 6 numbers under one shared inbox.", minsAgo: 90, status: "read" },
+    { from: "david", text: "Great — we'll onboard the sales team this week.", minsAgo: 85, status: "read" },
+    { from: "demo", text: "I'll send over the setup guide shortly 👍", minsAgo: 80, status: "received" },
+  ]},
+  { with: "james", messages: [
+    { from: "james", text: "Welcome to Periskope 👋 Ping me if you need anything.", minsAgo: 40, status: "read" },
+    { from: "demo", text: "Thanks James! Loving the product so far.", minsAgo: 36, status: "received" },
   ]},
 ];
 
@@ -109,14 +126,14 @@ async function main() {
   const people = [DEMO, ...PEOPLE];
   const idOf = {};
   for (const u of people) {
-    idOf[u.user_metadata.username] = await ensureUser(u, existing);
+    idOf[u.key] = await ensureUser(u, existing);
   }
 
   // Ensure a profile row exists for every user (backfills when the auth trigger
   // didn't run, e.g. users created before the schema). The profile INSERT
   // trigger also wires up the contacts between everyone.
   const profileRows = people.map((u) => ({
-    id: idOf[u.user_metadata.username],
+    id: idOf[u.key],
     username: u.user_metadata.username,
     avatar_url: u.user_metadata.avatar_url,
     phone: u.user_metadata.phone,

@@ -18,7 +18,6 @@ interface ContactItemProps {
   latestMessage: string;
   phone: string;
   unreadCount?: number;
-  tags?: string[];
   date: string;
   avatar?: string;
   isMuted?: boolean;
@@ -27,12 +26,30 @@ interface ContactItemProps {
   isOnline?: boolean;
 }
 
+// Meaningful CRM-style labels, assigned deterministically per contact.
+const TAG_POOL = [
+  { label: "Lead", className: "bg-blue-50 text-blue-600" },
+  { label: "Customer", className: "bg-green-50 text-green-700" },
+  { label: "VIP", className: "bg-amber-50 text-amber-600" },
+  { label: "Support", className: "bg-orange-50 text-orange-600" },
+  { label: "Follow-up", className: "bg-yellow-50 text-yellow-700" },
+  { label: "Onboarding", className: "bg-indigo-50 text-indigo-600" },
+  { label: "Priority", className: "bg-red-50 text-red-600" },
+  { label: "New", className: "bg-teal-50 text-teal-600" },
+];
+
+function tagsFor(seed: string) {
+  let h = 0;
+  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
+  const count = (h % 2) + 1; // 1 or 2 tags
+  return Array.from({ length: count }, (_, i) => TAG_POOL[(h + i * 3) % TAG_POOL.length]);
+}
+
 export const ContactItem: React.FC<ContactItemProps> = ({
   name,
   latestMessage,
   phone,
   unreadCount,
-  tags = ["Demo", "Dont Send"],
   date,
   avatar,
   isMuted = false,
@@ -41,9 +58,9 @@ export const ContactItem: React.FC<ContactItemProps> = ({
   isOnline = false,
 }) => {
   return (
-    <div className={`flex items-center justify-between ${isActive ? 'bg-gray-100' : 'bg-white'} hover:bg-gray-100 rounded-sm transition-all duration-200 ease-in-out`}>
+    <div className={`flex items-center justify-between border-b border-gray-100 ${isActive ? 'bg-gray-100' : 'bg-white'} hover:bg-gray-100 rounded-sm transition-all duration-200 ease-in-out`}>
       {/* Left Section - Profile Icon and Contact Info */}
-      <div className="flex items-center space-x-2 p-2">
+      <div className="flex items-center space-x-2 p-2 flex-1 min-w-0">
         {/* Profile Picture */}
         <div className="relative transform -translate-y-1.5 h-10 w-10 rounded-full flex items-center justify-center bg-gray-200 hover:shadow-md transition-shadow duration-200 ease-in-out">
           {avatar ? (
@@ -62,11 +79,11 @@ export const ContactItem: React.FC<ContactItemProps> = ({
           )}
         </div>
         {/* Contact Details */}
-        <div>
+        <div className="min-w-0 flex-1">
           <h4 className="text-sm font-semibold text-gray-900 flex items-center mb-0.5">
             {name || phone} {/* Display name if available, otherwise phone */}
           </h4>
-          <div className="flex items-center">
+          <div className="flex items-center min-h-4 min-w-0">
             {unreadCount && unreadCount > 0 ? null : (
               <>
                 {userSentState === UserSentState.SENT && (
@@ -80,7 +97,7 @@ export const ContactItem: React.FC<ContactItemProps> = ({
                 )}
               </>
             )}
-            <p className="text-xs text-gray-500 truncate w-20 lg:w-40 px-0.5">
+            <p className="text-xs text-gray-500 truncate w-full min-w-0 px-0.5">
               {latestMessage}
             </p>
           </div>
@@ -92,28 +109,16 @@ export const ContactItem: React.FC<ContactItemProps> = ({
       </div>
       {/* Right Section - Tags, Unread Count, Date */}
       <div className="flex flex-col relative items-end space-y-1 right-2 top-0 h-14">
-        {/* Tags */}
         <div className="flex space-x-1">
-          {tags.map((tag, index) => (
+          {tagsFor(name || phone).map((t) => (
             <span
-              key={index}
-              className={`text-xs px-1 py-0.5 rounded-md hover:scale-105 cursor-default transition-transform duration-150 ease-in-out ${
-                tag === "Demo"
-                  ? "bg-orange-50 text-stone-400 hover:bg-orange-100"
-                  : tag === "internal"
-                    ? "bg-green-100 text-green-700 hover:bg-green-200"
-                    : tag === "Signup"
-                      ? "bg-green-100 text-green-700 hover:bg-green-200"
-                      : tag === "Dont Send"
-                        ? "bg-red-50 text-red-500 hover:bg-red-100"
-                        : "bg-gray-100 text-brown-400 hover:bg-gray-200"
-              }`}
+              key={t.label}
+              className={`text-[10px] font-medium px-1.5 py-0.5 rounded-md ${t.className}`}
             >
-              {tag}
+              {t.label}
             </span>
           ))}
         </div>
-
         <div className="flex absolute items-center bottom-3 gap-1">
           {/* Unread Count */}
           {unreadCount && unreadCount > 0 ? (
