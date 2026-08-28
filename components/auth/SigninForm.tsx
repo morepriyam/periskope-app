@@ -119,7 +119,26 @@ export const SigninForm = () => {
       )}
 
       {step === "email" ? (
-        <>
+        <div className="space-y-4">
+          <button
+            type="button"
+            onClick={handleGoogle}
+            disabled={loading}
+            className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-md border border-gray-300 text-sm font-semibold text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 transition-colors"
+          >
+            <FcGoogle className="h-5 w-5" />
+            Continue with Google
+          </button>
+
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-200" />
+            </div>
+            <div className="relative flex justify-center text-xs">
+              <span className="bg-white px-2 text-gray-400">or</span>
+            </div>
+          </div>
+
           <form className="space-y-4" onSubmit={handleContinueWithEmail}>
             <div>
               <label
@@ -148,17 +167,7 @@ export const SigninForm = () => {
               Continue with Email
             </button>
           </form>
-
-          <button
-            type="button"
-            onClick={handleGoogle}
-            disabled={loading}
-            className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-md border border-gray-300 text-sm font-semibold text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 transition-colors"
-          >
-            <FcGoogle className="h-5 w-5" />
-            Continue with Google
-          </button>
-        </>
+        </div>
       ) : (
         <form className="space-y-4" onSubmit={handleSignIn}>
           <button
@@ -209,16 +218,7 @@ export const SigninForm = () => {
         </form>
       )}
 
-      <div className="relative">
-        <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-gray-200" />
-        </div>
-        <div className="relative flex justify-center text-xs">
-          <span className="bg-white px-2 text-gray-400">or</span>
-        </div>
-      </div>
-
-      <div className="space-y-2">
+      <div className="space-y-2 border-t border-gray-100 pt-5">
         {highlightDemo && (
           <p className="text-center text-sm font-semibold text-green-700">
             👇 One click — no account needed
@@ -247,6 +247,28 @@ export const SigninForm = () => {
           </Link>
         </p>
       </div>
+
+      <p className="text-center text-xs text-gray-400">
+        By continuing you agree to Periskope&apos;s{" "}
+        <a
+          href="https://periskope.app/terms"
+          target="_blank"
+          rel="noreferrer"
+          className="underline hover:text-gray-600"
+        >
+          Terms
+        </a>{" "}
+        and{" "}
+        <a
+          href="https://periskope.app/privacy"
+          target="_blank"
+          rel="noreferrer"
+          className="underline hover:text-gray-600"
+        >
+          Privacy Policy
+        </a>
+        .
+      </p>
     </div>
   );
 };
